@@ -254,9 +254,16 @@ class IssueDetector:
         lines = content.split('\n')
 
         for i, line in enumerate(lines, 1):
-            if re.search(r'["\'][/\\]|["\'][A-Za-z]:[/\\]', line):
-                if not re.search(r'http:|https:|file://|/tmp/', line):
-                    issues.append(i)
+            # Unix absolute path: string literal starts with '/' (e.g. "/Users/kuro/...")
+            # Windows absolute path: string literal starts with drive letter + colon
+            unix_abs = re.search(r'["\'][/]', line)
+            win_abs  = re.search(r'["\'][A-Za-z]:[/\\]', line)
+            if not (unix_abs or win_abs):
+                continue
+            # Skip URLs, /tmp (ephemeral), and GDAL virtual paths that legitimately use /
+            if re.search(r'http:|https:|file://|/tmp/|HDF4_EOS|HDF5:|NETCDF:', line):
+                continue
+            issues.append(i)
 
         return issues
 

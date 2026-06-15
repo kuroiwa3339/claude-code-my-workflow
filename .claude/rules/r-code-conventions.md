@@ -158,12 +158,24 @@ terra::extract(raster, polygons)
 
 ### HDF / SDS reading
 
-- MCDWD_L3 flood layer SDS names:
-  - `"Flood_1Day"` — daily composite (primary variable)
-  - `"Flood_3Day"` — 3-day composite
-- Read with: `terra::rast(hdf_path, subds = "Flood_1Day")`
-- **Always check the CRS after reading** — MODIS HDF4 files are in sinusoidal projection and must be reprojected before any spatial operation.
-- Use `method = "near"` for reprojection: MCDWD values are categorical flood codes (0–4), not continuous — bilinear interpolation produces nonsense.
+**MCDWD_L3 files are HDF4 format. System GDAL (Homebrew) and terra's bundled GDAL do NOT support HDF4.** Use the conda GDAL at `~/miniforge3/bin/gdal_translate` (install: `conda install -c conda-forge libgdal-hdf4`).
+
+- HDF4 EOS grid structure:
+  - Grid name: `Grid_Water_Composite`
+  - SDS layer: `Flood_1Day_250m` (daily; also `Flood_2Day_250m`, `Flood_3Day_250m`)
+  - Full GDAL path: `HDF4_EOS:EOS_GRID:"<file>":Grid_Water_Composite:Flood_1Day_250m`
+
+- Conversion pattern (HDF4 → GeoTIFF → terra):
+  ```r
+  GDAL_TRANSLATE <- path.expand("~/miniforge3/bin/gdal_translate")
+  sds <- sprintf('HDF4_EOS:EOS_GRID:"%s":Grid_Water_Composite:Flood_1Day_250m', hdf_path)
+  system2(GDAL_TRANSLATE, args = c("-q", "-of", "GTiff", shQuote(sds), shQuote(tmp_tif)))
+  r <- terra::rast(tmp_tif)
+  r_proj <- terra::project(r, "EPSG:5070", method = "near")
+  file.remove(tmp_tif)
+  ```
+- **`method = "near"` is mandatory** — MCDWD values are categorical flood codes (0–4), not continuous. Bilinear interpolation produces meaningless fractional codes.
+- HDF4 magic bytes for file validation: `as.raw(c(0x0e, 0x03, 0x13, 0x01))` (first 4 bytes).
 
 ### MCDWD_L3 flood codes
 
