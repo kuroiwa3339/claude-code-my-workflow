@@ -1,72 +1,115 @@
-# `scripts/R/` — Reproducibility-first analysis template
+# `scripts/R/` — MCDWD Flood Panel Pipeline
 
-This directory ships a numbered-script template for **reproducible** data analysis. Every script has one responsibility; all orchestration happens through `00_run_all.R`.
+This directory contains the numbered R pipeline that processes NASA MCDWD_L3
+satellite flood detection data into analysis-ready county × day and ZIP × day
+panel datasets covering the contiguous United States from 2000 to present.
 
-## Conventions
+## Pipeline Overview
 
-- **Run everything from `00_run_all.R`** — never source mid-pipeline scripts individually unless you're debugging.
-- **Paths via [`here::here()`](https://here.r-lib.org/)** — never `setwd()`. The project root is the git repo root.
-- **Fixed seed** set once in `00_run_all.R`: `set.seed(20260413)`. Stochastic scripts (`01_load.R`, `05_figures.R`) also re-seed locally from `PROJECT_SEED` so running them directly for debugging still produces deterministic outputs. Change only with a recorded reason in the session log.
-- **`sessionInfo()` written to `scripts/R/_outputs/sessionInfo.txt`** at the end of `00_run_all.R` so reviewers can verify the environment.
-- **Outputs to `scripts/R/_outputs/`** — tables (`*.tex`), figures (`*.pdf`, `*.svg`), and RDS snapshots (`*.rds`). Directory is `.gitignore`d in most setups; decide per-project.
-- **No hardcoded absolute paths anywhere.** `/review-r` enforces this.
-- **Log package versions** either via `renv` (recommended) or a `DESCRIPTION` file at repo root.
+```
+01_download.R   → data/raw/mcdwd/YYYY/*.hdf
+                        ↓
+02_process_rasters.R → data/raw/mcdwd/processed/YYYY/flood_YYYYMMDD.tif
+                        ↓
+03_aggregate_county.R → data/processed/county/county_flood_YYYY.rds
+04_aggregate_zip.R    → data/processed/zip/zip_flood_YYYY.rds
+                        ↓
+05_build_panel.R → data/final/county_flood_panel.rds   (.csv)
+                   data/final/zip_flood_panel.rds       (.csv)
+                        ↓
+06_descriptives.R → scripts/R/_outputs/{figures, tables}
+07_validate.R     → quality_reports/diagnoses/validate_YYYY-MM-DD.md
+```
 
-## Files
+## Scripts
 
 | Script | Responsibility |
 | --- | --- |
-| `00_run_all.R` | Orchestrator. Sources 01–05 in order, writes `sessionInfo()`, prints timing. |
-| `01_load.R` | Read raw data into data frames. No transformations. |
-| `02_clean.R` | Type coercion, missingness handling, join logic, derived columns. |
-| `03_analyze.R` | Regressions, tests, any model fits. Save results to RDS. |
-| `04_tables.R` | Regression tables → `.tex` via `fixest::etable` / `modelsummary`. |
-| `05_figures.R` | `ggplot2` figures → PDF + SVG. |
+| `00_run_all.R` | Orchestrator — sources 01–07 in order, logs timing, writes sessionInfo |
+| `01_download.R` | Download MCDWD_L3 HDF tiles from NASA EarthData (resume-safe) |
+| `02_process_rasters.R` | Reproject sinusoidal → EPSG:5070, mosaic tiles, write COG GeoTIFFs |
+| `03_aggregate_county.R` | Exact zonal stats → county × day flood fractions |
+| `04_aggregate_zip.R` | Exact zonal stats → ZCTA × day flood fractions |
+| `05_build_panel.R` | Stack annual files → analysis-ready panels with flood indicators |
+| `06_descriptives.R` | Summary figures (map, time series) and tables |
+| `07_validate.R` | Automated QA checks; exits with status 1 on any FAIL |
+
+## Conventions
+
+- **Run everything from `00_run_all.R`** (or specify `--stages=02,03` for a subset).
+- **Paths via `here::here()`** — never `setwd()`. Root = git repo root.
+- **CRS contract**: EPSG:5070 (NAD83 / Conus Albers) for all vector and processed raster data.
+- **One date in memory at a time** — do not modify scripts to batch-load years.
+- **`exactextractr` for zonal stats**, never `terra::extract()`.
+- Fixed seed in `00_run_all.R`: `set.seed(20260615L)`. Change only with a reason in the session log.
 
 ## First-time setup
 
-Hard dependencies (pipeline fails loudly if missing):
+### 1. NASA EarthData credentials
+
+Register at <https://urs.earthdata.nasa.gov/> (free). Then add to `~/.Renviron`:
+
+```
+EARTHDATA_USER=your_username
+EARTHDATA_PASS=your_password
+```
+
+Run `usethis::edit_r_environ()` to open the file. Restart R after editing.
+
+### 2. Install required R packages
 
 ```r
-# From the R console, at the repo root
-install.packages(c("here", "ggplot2"))       # required — pipeline won't run without these
+install.packages(c(
+  "here",           # path resolution
+  "terra",          # raster processing
+  "sf",             # vector data / CRS
+  "exactextractr",  # sub-pixel accurate zonal stats
+  "tigris",         # Census boundary downloads
+  "httr2",          # HTTP requests for downloads
+  "lubridate",      # date arithmetic
+  "dplyr", "tidyr", "purrr", "readr",  # tidyverse core
+  "furrr", "future",  # parallel processing
+  "ggplot2", "scales", # figures
+  "glue"            # string interpolation
+))
 ```
 
 Optional but recommended:
-
 ```r
-install.packages(c("svglite", "renv"))        # svglite = SVG figures for Quarto; renv = version pinning
-renv::init()                                  # capture current package versions if you want a lockfile
+install.packages("renv")
+renv::init()  # pin package versions for reproducibility
 ```
 
-Why the split? `here` + `ggplot2` are load-bearing: without them the pipeline either can't resolve paths or can't build the documented `fig_main.pdf`. `svglite` is optional — if absent, `05_figures.R` emits a **warning** and skips `fig_main.svg`. Quarto slides that reference the SVG will fail to render that figure; Beamer slides (PDF only) are unaffected.
+### 3. Disk space
 
-Then run:
+Budget **~10–30 GB per year** for raw HDF tiles. Processed GeoTIFFs (COG,
+DEFLATE) are ~80% smaller. Final panel RDS files are a few hundred MB total.
+Raw and processed directories are gitignored — only `data/final/` is committed.
 
-```r
-source("scripts/R/00_run_all.R")
-```
+## Runtime estimates (8-core machine)
 
-Expected outputs in `scripts/R/_outputs/`:
+| Stage | Per year | Full 2000–present |
+| --- | --- | --- |
+| 01 download | 2–6 hrs (network) | — |
+| 02 process | 5–15 min | 2–5 hrs |
+| 03 county agg | 5–15 min | 2–5 hrs |
+| 04 ZIP agg | 15–30 min | 5–10 hrs |
+| 05 build panel | < 1 min | < 5 min |
 
-| File | Condition |
+## Expected outputs (after full pipeline run)
+
+| File | Notes |
 | --- | --- |
-| `fig_main.pdf` | Always |
-| `fig_main.svg` | Only if `svglite` is installed |
-| `table_main.tex` | Always |
-| `results.rds` | Always |
-| `sessionInfo.txt` | Always |
-
-Verify:
-
-```r
-list.files("scripts/R/_outputs/")
-```
+| `data/final/county_flood_panel.rds` | ~270M obs (3143 counties × ~25 yrs × ~365 days) |
+| `data/final/county_flood_panel.csv` | Interoperable with Stata/Python |
+| `data/final/zip_flood_panel.rds` | ~300M+ obs (33k ZCTAs) |
+| `scripts/R/_outputs/fig_flood_days_per_year.pdf` | Time series |
+| `scripts/R/_outputs/fig_county_total_flood_days.pdf` | Choropleth map |
+| `scripts/R/_outputs/sessionInfo.txt` | Environment snapshot |
+| `quality_reports/diagnoses/validate_YYYY-MM-DD.md` | QA report |
 
 ## Reviewing
 
-`/review-r scripts/R/03_analyze.R` runs the R code-review agent. `/audit-reproducibility` (when shipped) will verify fixed seeds, no absolute paths, sessionInfo capture, and that `00_run_all.R` actually regenerates all outputs.
-
-## Removing this template
-
-Once you have your own analysis, the scripts 01–05 become yours. Delete this README (or rewrite it for your project). Keep `00_run_all.R` — the convention is the part that matters.
+`/review-r scripts/R/03_aggregate_county.R` — runs the R code-review agent.
+`/audit-reproducibility` — verifies numeric claims against panel outputs.
+`/diagnose` — root-cause analysis for a specific pipeline failure.

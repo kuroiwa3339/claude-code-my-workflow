@@ -85,3 +85,33 @@ scripts/R/_outputs/
 # Output artifacts — uncomment lines below based on your preference
 # *.rds
 # output/**/*.rds
+
+# ---- Spatial / flood data (large files, download via scripts) ---------------
+# Raw downloads and intermediate rasters are never committed
+data/raw/
+data/processed/
+!data/raw/**/.gitkeep
+!data/processed/**/.gitkeep
+# Keep data/final/ (small analysis-ready panels) — uncomment to ignore those too:
+# data/final/
+
+# Raster and vector formats
+*.hdf
+*.hdf4
+*.h4
+*.nc
+*.nc4
+*.tif
+*.tiff
+*.img
+*.vrt
+# Shapefile components (use .gpkg instead)
+*.shp
+*.dbf
+*.shx
+*.prj
+*.cpg
+*.qpj
+# Cloud-optimized GeoTIFF sidecar
+*.tif.ovr
+*.tif.aux.xml

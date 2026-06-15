@@ -1,11 +1,6 @@
-# CLAUDE.MD -- Academic Project Development with Claude Code
+# CLAUDE.MD -- MCDWD Flood Panel Dataset
 
-<!-- HOW TO USE: Replace [BRACKETED PLACEHOLDERS] with your project info.
-     Customize Beamer environments and CSS classes for your theme.
-     Keep this file under ~150 lines — Claude loads it every session.
-     See the guide at docs/workflow-guide.html for full documentation. -->
-
-**Project:** [YOUR PROJECT NAME]
+**Project:** MCDWD Flood Panel Dataset
 **Institution:** [YOUR INSTITUTION]
 **Branch:** main
 
@@ -14,9 +9,9 @@
 ## Core Principles
 
 - **Plan first** -- enter plan mode before non-trivial tasks; save plans to `quality_reports/plans/`
-- **Verify after** -- compile/render and confirm output at the end of every task
-- **Single source of truth** -- Beamer `.tex` is authoritative; Quarto `.qmd` derives from it
-- **Quality gates** -- nothing ships below 80/100
+- **Verify after** -- run the pipeline stage and confirm outputs before moving on
+- **Single source of truth** -- raw HDF rasters in `data/raw/mcdwd/` are authoritative; all processed files derive from them
+- **Quality gates** -- nothing ships below 80/100; R scripts must parse clean and produce expected outputs
 - **[LEARN] tags** -- when corrected, save `[LEARN:category] wrong → right` to [MEMORY.md](MEMORY.md)
 
 Cross-session context lives in [MEMORY.md](MEMORY.md); past plans, specs, and session logs are in [quality_reports/](quality_reports/).
@@ -26,47 +21,44 @@ Cross-session context lives in [MEMORY.md](MEMORY.md); past plans, specs, and se
 ## Folder Structure
 
 ```
-[YOUR-PROJECT]/
-├── CLAUDE.MD                    # This file
+flood-panel/
+├── CLAUDE.md                    # This file
 ├── .claude/                     # Rules, skills, agents, hooks
-├── Bibliography_base.bib        # Centralized bibliography
-├── Figures/                     # Figures and images
-├── Preambles/header.tex         # LaTeX headers
-├── Slides/                      # Beamer .tex files
-├── Quarto/                      # RevealJS .qmd files + theme
-├── docs/                        # GitHub Pages (auto-generated)
-├── scripts/                     # Utility scripts + R code
-├── quality_reports/             # Plans, session logs, merge reports, decision records
-├── explorations/                # Research sandbox (see rules)
-├── templates/                   # Session log, quality report templates
-└── master_supporting_docs/      # Papers and existing slides
+├── data/
+│   ├── raw/
+│   │   ├── mcdwd/               # Downloaded HDF tiles (GITIGNORED — large)
+│   │   └── boundaries/          # Census TIGER shapefiles (GITIGNORED — large)
+│   ├── processed/
+│   │   ├── county/              # County-day flood aggregates (.rds)
+│   │   └── zip/                 # ZIP-day flood aggregates (.rds)
+│   └── final/                   # Analysis-ready panel datasets (.rds, .csv)
+├── scripts/
+│   ├── R/                       # Numbered pipeline scripts (00–07)
+│   └── R/_outputs/              # Figures, tables, sessionInfo (GITIGNORED)
+├── quality_reports/             # Plans, session logs, diagnostics
+├── explorations/                # Research sandbox
+└── master_supporting_docs/      # Reference papers
 ```
 
 ---
 
-## Commands
+## Pipeline Commands
 
 ```bash
-# LaTeX (3-pass, XeLaTeX only)
-cd Slides && TEXINPUTS=../Preambles:$TEXINPUTS xelatex -interaction=nonstopmode file.tex
-BIBINPUTS=..:$BIBINPUTS bibtex file
-TEXINPUTS=../Preambles:$TEXINPUTS xelatex -interaction=nonstopmode file.tex
-TEXINPUTS=../Preambles:$TEXINPUTS xelatex -interaction=nonstopmode file.tex
+# Run full pipeline (all stages)
+Rscript scripts/R/00_run_all.R
 
-# Deploy Quarto to GitHub Pages
-./scripts/sync_to_docs.sh LectureN
+# Run a single stage
+Rscript scripts/R/02_process_rasters.R
 
-# Quality score
-python scripts/quality_score.py Quarto/file.qmd
+# Validate panel outputs
+Rscript scripts/R/07_validate.R
 
-# Palette sync (LaTeX ↔ SCSS)
-./scripts/check-palette-sync.sh
-
-# Surface-count sync (README ↔ CLAUDE.md ↔ guide ↔ landing page)
+# Surface-count sync check
 ./scripts/check-surface-sync.sh
 ```
 
-**Palette contract:** color names in `Preambles/header.tex` must match SCSS variables in `Quarto/theme-template.scss`. See [`Preambles/README.md`](Preambles/README.md).
+**Credentials:** NASA EarthData login must be in `~/.Renviron` as `EARTHDATA_USER` and `EARTHDATA_PASS`. Run `usethis::edit_r_environ()` to open the file.
 
 ---
 
@@ -78,48 +70,44 @@ python scripts/quality_score.py Quarto/file.qmd
 | 90 | PR | Ready for deployment |
 | 95 | Excellence | Aspirational |
 
-Enforced by `/commit` (halts + asks for override) **and** — once you run `./scripts/install-hooks.sh` — by a real git pre-commit hook (`.githooks/pre-commit`) that runs the surface-sync + quality (≥80) gates on every commit. Bypass sparingly with `SKIP_QUALITY_GATE=1` or `--no-verify`.
+Enforced by `/commit` (halts + asks for override) **and** — once you run `./scripts/install-hooks.sh` — by a real git pre-commit hook. Bypass with `SKIP_QUALITY_GATE=1` or `--no-verify`.
 
 ---
 
 ## Skills Quick Reference
 
-The full table of all skills lives in [README.md](README.md#skills-claudeskills). Most-used, by workflow:
+Most-used skills for this project:
 
-- **Slides / teaching:** `/create-lecture` `/compile-latex` `/deploy` `/qa-quarto` `/slide-excellence` `/syllabus` `/teach-from-paper` `/scaffold-exercises`
-- **Papers / review:** `/review-paper` (`--peer`) `/seven-pass-review` `/respond-to-referees` `/verify-claims` `/proofread` `/humanize` `/submission-disclosures`
-- **Data / reproducibility:** `/data-analysis` `/did-event-study` `/simulation-study` `/audit-reproducibility` `/diagnose` `/replication-package` `/capture-environment` `/power-analysis` `/disclosure-check`
-- **Research / writing:** `/interview-me` `/lit-review` `/research-ideation` `/preregister` `/grant-proposal` `/data-management-plan`
-- **Meta / workflow:** `/commit` `/learn` `/new-skill` `/checkpoint` `/context-status` `/deep-audit` `/coauthor-brief` `/triage-inbox`
+- **Data / reproducibility:** `/data-analysis` `/audit-reproducibility` `/diagnose` `/replication-package` `/capture-environment`
+- **Papers / review:** `/review-paper` `/seven-pass-review` `/respond-to-referees` `/verify-claims` `/proofread`
+- **Research / writing:** `/interview-me` `/lit-review` `/research-ideation` `/preregister`
+- **Meta / workflow:** `/commit` `/learn` `/checkpoint` `/context-status` `/deep-audit`
 
-Stata (`/stata-replication`), R packages (`/r-package-check`), TikZ (`/extract-tikz`, `/new-diagram`), and more — see the README for the complete index.
-
----
-
-<!-- CUSTOMIZE: Replace placeholder rows ([your-env], [.your-class]) with your own.
-     Delete the rows marked "(example — delete)" once you've added yours. -->
-
-## Beamer Custom Environments
-
-| Environment | Effect | Use Case |
-| --- | --- | --- |
-| `[your-env]` | [Description] | [When to use] |
-| `keybox` | Gold background box | Key points *(example — delete)* |
-| `definitionbox[Title]` | Blue-bordered titled box | Formal definitions *(example — delete)* |
-
-## Quarto CSS Classes
-
-| Class | Effect | Use Case |
-| --- | --- | --- |
-| `[.your-class]` | [Description] | [When to use] |
-| `.smaller` | 85% font | Dense content *(example — delete)* |
-| `.positive` | Green bold | Good annotations *(example — delete)* |
+Full skill index in [README.md](README.md#skills-claudeskills).
 
 ---
 
-## Current Project State
+## Spatial Data Notes
 
-| Lecture | Beamer | Quarto | Key Content |
+| Item | Value |
+| --- | --- |
+| Flood product | NASA MCDWD_L3 (MODIS 250m daily flood detection) |
+| SDS name | `"Flood_1Day"` (daily) or `"Flood_3Day"` (3-day composite) |
+| Raw projection | MODIS sinusoidal (SINU) |
+| Analysis CRS | EPSG:5070 — NAD83 / Conus Albers (reproject before all joins) |
+| Admin boundaries | `tigris` package (counties, ZCTAs) |
+| Zonal stats | `exactextractr::exact_extract()` — NOT `terra::extract()` |
+
+---
+
+## Pipeline Status
+
+| Stage | Script | Status | Output |
 | --- | --- | --- | --- |
-| HelloWorld *(sample — delete when ready)* | `HelloWorld.tex` | `HelloWorld.qmd` | Minimal deck to verify setup |
-| 1: [Topic] | `Lecture01_Topic.tex` | `Lecture1_Topic.qmd` | [Brief description] |
+| 1: Download | `01_download.R` | Scaffold | `data/raw/mcdwd/YYYY/` |
+| 2: Process rasters | `02_process_rasters.R` | Scaffold | `data/raw/mcdwd/processed/YYYY/flood_YYYYMMDD.tif` |
+| 3: County aggregation | `03_aggregate_county.R` | Scaffold | `data/processed/county/county_flood_YYYY.rds` |
+| 4: ZIP aggregation | `04_aggregate_zip.R` | Scaffold | `data/processed/zip/zip_flood_YYYY.rds` |
+| 5: Build panel | `05_build_panel.R` | Scaffold | `data/final/county_flood_panel.rds` |
+| 6: Descriptives | `06_descriptives.R` | Scaffold | `scripts/R/_outputs/` |
+| 7: Validate | `07_validate.R` | Scaffold | `quality_reports/diagnoses/` |

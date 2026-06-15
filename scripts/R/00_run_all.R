@@ -1,15 +1,20 @@
 # =============================================================================
-# 00_run_all.R — Orchestrator. Run this, not the individual scripts.
+# 00_run_all.R — Flood panel pipeline orchestrator.
 #
-# Reproducibility contract (enforced by /review-r and /audit-reproducibility):
-#   - Fixed seed set below.
-#   - Project root resolved via here::here() — no setwd().
-#   - Every package loaded under a renv (or DESCRIPTION) lockfile.
-#   - Outputs written to scripts/R/_outputs/ and listed at the end.
-#   - sessionInfo() captured so reviewers can verify the environment.
+# Run this script to execute the full MCDWD_L3 → county/ZIP panel pipeline.
+# Individual scripts can also be sourced directly for debugging, but running
+# via this orchestrator guarantees consistent seed, paths, and timing logs.
+#
+# Usage:
+#   Rscript scripts/R/00_run_all.R
+#   Rscript scripts/R/00_run_all.R --stages 03,04   # run only named stages
+#
+# Reproducibility contract:
+#   - Fixed seed set below (applies to stochastic stages like bootstrap CIs).
+#   - All paths via here::here() — no setwd().
+#   - sessionInfo() written to _outputs/ for environment verification.
 # =============================================================================
 
-# ---- Bootstrap -------------------------------------------------------------
 suppressPackageStartupMessages({
   if (!requireNamespace("here", quietly = TRUE)) {
     stop("Install 'here' first: install.packages('here')")
@@ -17,63 +22,73 @@ suppressPackageStartupMessages({
   library(here)
 })
 
-# Seed applies to everything downstream. Change ONLY with a reason in the
-# session log — this is load-bearing for identical numerical outputs.
-PROJECT_SEED <- 20260413L
+# Seed for any stochastic steps (bootstrap CIs in descriptives, etc.)
+PROJECT_SEED <- 20260615L
 set.seed(PROJECT_SEED)
 
-# Output directory (create if missing; treat as ephemeral).
+# Output dir for figures, tables, sessionInfo
 OUT_DIR <- here("scripts", "R", "_outputs")
 dir.create(OUT_DIR, showWarnings = FALSE, recursive = TRUE)
 
-# ---- Pipeline --------------------------------------------------------------
-# Scripts share state through a single shared environment. Parent is
-# globalenv() so standard R functions (rnorm, ggplot2 exports loaded by the
-# user, etc.) resolve normally. Cross-run contamination is prevented by each
-# script using `exists("varname", inherits = FALSE)` to check ONLY the
-# pipeline env, never the user's global state.
-#
-# 01_load.R produces raw_main; 02_clean.R consumes it and produces df;
-# 03_analyze.R consumes df and writes results.rds; 04 and 05 read from disk.
-pipeline_env <- new.env(parent = globalenv())
-# Propagate the orchestrator's seed + OUT_DIR into the shared env so scripts
-# can reference them without re-computing.
-pipeline_env$PROJECT_SEED <- PROJECT_SEED
-pipeline_env$OUT_DIR      <- OUT_DIR
+# ---- Parse --stages argument ------------------------------------------------
+args        <- commandArgs(trailingOnly = TRUE)
+stage_flag  <- grep("^--stages=", args, value = TRUE)
+run_stages  <- if (length(stage_flag)) {
+  strsplit(sub("^--stages=", "", stage_flag), ",")[[1]]
+} else {
+  NULL  # NULL = run all
+}
 
-pipeline <- c(
-  "01_load.R",
-  "02_clean.R",
-  "03_analyze.R",
-  "04_tables.R",
-  "05_figures.R"
+# ---- Pipeline definition ---------------------------------------------------
+pipeline <- list(
+  "01" = "01_download.R",
+  "02" = "02_process_rasters.R",
+  "03" = "03_aggregate_county.R",
+  "04" = "04_aggregate_zip.R",
+  "05" = "05_build_panel.R",
+  "06" = "06_descriptives.R",
+  "07" = "07_validate.R"
 )
 
-message("Running reproducibility pipeline with seed ", PROJECT_SEED, "...")
+to_run <- if (is.null(run_stages)) {
+  pipeline
+} else {
+  pipeline[run_stages]
+}
 
-timings <- vapply(pipeline, function(script) {
-  path <- here("scripts", "R", script)
+# Shared environment — scripts communicate through this, not global state
+pipeline_env                <- new.env(parent = globalenv())
+pipeline_env$PROJECT_SEED  <- PROJECT_SEED
+pipeline_env$OUT_DIR        <- OUT_DIR
+pipeline_env$DATA_DIR       <- here("data")
+
+message("=== MCDWD Flood Panel Pipeline ===")
+message("Seed: ", PROJECT_SEED)
+message("Stages: ", paste(names(to_run), collapse = ", "))
+message("")
+
+timings <- vapply(names(to_run), function(key) {
+  script <- to_run[[key]]
+  path   <- here("scripts", "R", script)
   if (!file.exists(path)) {
     stop("Missing pipeline script: ", path)
   }
+  message(sprintf("[%s] Starting %s ...", key, script))
   start <- Sys.time()
   source(path, local = pipeline_env)
   elapsed <- as.numeric(Sys.time() - start, units = "secs")
-  message(sprintf("  %s -> %.2fs", script, elapsed))
+  message(sprintf("[%s] Done in %.1fs", key, elapsed))
   elapsed
 }, numeric(1))
 
 # ---- Session capture -------------------------------------------------------
-writeLines(
-  capture.output(sessionInfo()),
-  con = file.path(OUT_DIR, "sessionInfo.txt")
-)
+writeLines(capture.output(sessionInfo()),
+           con = file.path(OUT_DIR, "sessionInfo.txt"))
 
-# ---- Report ----------------------------------------------------------------
-outputs <- list.files(OUT_DIR, full.names = FALSE)
+# ---- Summary ---------------------------------------------------------------
 message("")
-message("Pipeline complete. Total time: ", sprintf("%.2fs", sum(timings)))
-message("Outputs in ", OUT_DIR, ":")
-for (f in outputs) message("  - ", f)
+message("=== Pipeline complete ===")
+message(sprintf("Total time: %.1fs (%.1f min)", sum(timings), sum(timings) / 60))
+message("Check quality_reports/diagnoses/ for validation output.")
 
-invisible(list(timings = timings, outputs = outputs))
+invisible(list(timings = timings))
