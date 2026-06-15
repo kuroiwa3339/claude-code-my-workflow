@@ -124,3 +124,65 @@ See [`r-reviewer.md`](../agents/r-reviewer.md) Category 11 ("Numerical Disciplin
 [ ] Comments explain WHY not WHAT
 [ ] Numerical discipline: no float ==, CDF clamping with eps, pre-allocated vectors
 ```
+
+## 10. Spatial / Raster Standards (MCDWD Flood Pipeline)
+
+### CRS discipline
+
+- **All vector data must be in EPSG:5070** (NAD83 / Conus Albers) before any spatial join or zonal extraction.
+- Check CRS at the top of every script that reads a spatial file:
+  ```r
+  stopifnot(sf::st_crs(my_sf) == sf::st_crs("EPSG:5070"))
+  ```
+- Never assume downloaded shapefiles or tigris outputs are in 5070 — always reproject explicitly with `sf::st_transform()` or `terra::project()`.
+- Document the target CRS as a constant at the top of the script: `TARGET_CRS <- "EPSG:5070"`.
+
+### Memory management for large rasters
+
+- Never load more than **one date's raster** into memory at a time. A full CONUS MCDWD mosaic at 250m is ~1–2 GB in RAM.
+- Use `terra::rast()` lazily — values are not read until explicitly requested.
+- After each loop iteration: `rm(r, extracts); gc(verbose = FALSE)`.
+- Wrap year-level processing in a function so local variables go out of scope and are GC'd between years.
+
+### exactextractr — always prefer over terra::extract()
+
+```r
+# RIGHT — sub-pixel accurate, fast, handles partial pixels correctly
+exactextractr::exact_extract(raster, polygons, fun = NULL, progress = FALSE)
+
+# WRONG — ignores partial pixels, slower on large polygon sets
+terra::extract(raster, polygons)
+```
+
+`exact_extract(fun = NULL)` returns a list of data.frames with columns `value` and `coverage_fraction`. Summarize per-polygon manually to apply custom flood-code logic.
+
+### HDF / SDS reading
+
+- MCDWD_L3 flood layer SDS names:
+  - `"Flood_1Day"` — daily composite (primary variable)
+  - `"Flood_3Day"` — 3-day composite
+- Read with: `terra::rast(hdf_path, subds = "Flood_1Day")`
+- **Always check the CRS after reading** — MODIS HDF4 files are in sinusoidal projection and must be reprojected before any spatial operation.
+- Use `method = "near"` for reprojection: MCDWD values are categorical flood codes (0–4), not continuous — bilinear interpolation produces nonsense.
+
+### MCDWD_L3 flood codes
+
+| Code | Meaning | Count as valid? |
+|---|---|---|
+| 0 | No flood | Yes |
+| 1 | Missing / outside swath | No |
+| 2 | Cloud-obscured | No |
+| 3 | Flood detected | Yes |
+| 4 | Open water (permanent) | Yes |
+
+`flood_fraction = sum(value == 3) / sum(value %in% c(0, 3, 4))` per polygon per date.
+
+### Progress logging for long batch jobs
+
+```r
+message(sprintf("[%d/%d] %s — %.1fs", i, n, format(date), elapsed))
+```
+
+- Log year-level start/end time: `message(Sys.time(), " — year ", yr)`
+- Save intermediate `.rds` checkpoints per year so the job is resumable after interruption.
+- Use `furrr::future_map()` with `furrr_options(seed = TRUE)` for parallel date loops.
