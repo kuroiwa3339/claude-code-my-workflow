@@ -13,7 +13,7 @@
 
 This paper examines whether employer-provided health insurance serves as a labor market adaptation mechanism to rising temperatures, using 30 years of NAWS data on U.S. crop workers. The contribution is genuinely novel: the existing climate-labor literature focuses almost entirely on wages and labor supply, while fringe benefits—especially health insurance—have been largely ignored. The use of a long-run moving-average temperature specification to capture compensation-contract adjustment is well-motivated and consistent with recent adaptation literature (Cui et al. 2020, 2022). The finding of adaptation inequality by legal status is the paper's most policy-relevant result.
 
-That said, the paper has a cluster of concerns that must be resolved before submission. The identification argument is underdeveloped, the economic magnitude is never contextualized against plausible climate scenarios, the adversarial wage-prediction puzzle from the compensating differentials framework goes unexplained, and the adaptation inequality section—the strongest finding—is treated too briefly relative to its importance. The draft also contains internal working notes and compilation artifacts that must be removed.
+That said, the paper has a cluster of concerns that must be resolved before submission. The identification argument is underdeveloped, the economic magnitude is never contextualized against plausible climate scenarios, and the adaptation inequality section—the strongest finding—is treated too briefly relative to its importance. The draft also contains internal working notes and compilation artifacts that must be removed. (Note: An earlier draft of this review listed the null wage result as a contradiction of compensating differentials theory — that concern has been retracted; see MC3 below.)
 
 ---
 
@@ -43,12 +43,16 @@ That said, the paper has a cluster of concerns that must be resolved before subm
 - **Suggestion:** Add a back-of-envelope calculation using CMIP6 or PRISM projection data for the study counties. Report the implied effect under a moderate (RCP4.5) and high (RCP8.5) warming scenario. This requires no new regression—just applying the estimated coefficient to projected shifts in the temperature distribution.
 - **Location:** Section 6 (Results, pp. 11–13), Section 8 (Conclusion)
 
-### MC3: The Wage Puzzle — Compensating Differentials Predicts Wage Decline
+### MC3: ~~The Wage Puzzle~~ — **RETRACTED: NOT A CONCERN**
 
-- **Dimension:** Argument / Econometrics
-- **Issue:** The conceptual framework (Section 3.2) models health insurance as a compensating differential: firms that provide health insurance pay *less* wages (by X, the compensating differential) because workers value the benefit. If this framework is correct, rising temperatures should simultaneously increase health insurance provision *and* reduce wages (as health insurance substitutes for wages). The paper finds no wage response. This is not a minor inconsistency—it is a direct contradiction of the model's core prediction. The paper acknowledges only that "compensation adjustments to sustained warming occur through health-related fringe benefits rather than wages" (p. 13), without noting that the wage silence falsifies the compensating differentials prediction.
-- **Suggestion:** Explicitly address this puzzle. Three possible explanations: (a) agricultural labor markets are not perfectly competitive and wages are downwardly sticky, so the adjustment is one-sided; (b) the compensating differential X is already priced into the labor market before the period studied and the marginal shift is in insurance not wages; (c) the magnitude of the health insurance effect is small enough that the wage offset is below statistical detection thresholds. The paper should commit to one of these and show evidence for it, or revise the model to not predict a wage decline.
-- **Location:** Section 3.2 (Conceptual Framework), Section 6 (Results)
+- **Status:** Retracted after review of supporting theory literature (Lavetti 2023; Dey & Flinn 2005).
+- **Original claim:** That the null wage result contradicts compensating differentials (CD) theory.
+- **Why this was wrong:**
+  1. **CD theory predicts a cross-sectional sorting tradeoff, not a temporal one.** The downward-sloping M(A) curve in Rosen (1974; 1986) describes how HI-providing firms pay less than no-HI firms *at a point in time*, holding worker productivity constant. When a common temperature shock causes *many* firms to adopt HI simultaneously, this shifts the market equilibrium — it is not a movement along M(A) but a shift of M(A) itself. No wage cut at the firm level is implied.
+  2. **Dey & Flinn (2005, *Econometrica*) show that in a search-matching-bargaining equilibrium, wages at HI jobs are *higher* (stochastically) than at non-HI jobs.** HI has a productivity effect (reduces involuntary separations via better health), which raises match surplus. Nash bargaining then gives workers higher wages at HI firms, not lower. The abstract states: "wages at jobs with health insurance coverage are larger (in a stochastic sense) than those at jobs without health insurance."
+  3. **Lavetti (2023, *JEP*) documents that the M(A) function can shift due to output-price or productivity shocks unrelated to worker preferences (p. 195).** A temperature shock that increases health risk is exactly such a shock.
+  4. **Unobserved worker quality** (Lavetti 2023, Figure 3) generates a positive correlation between HI and wages in data, so null or positive wage effects are the *expected* empirical finding, not a puzzle.
+- **Implication for the paper:** The null wage result is *consistent* with CD theory and with equilibrium HI models. Total compensation (wages + HI) rises; wages alone need not fall. If anything, this is a *positive finding* — employers absorb the cost of HI through productivity gains or profit margins rather than passing it to workers as wage cuts. A brief sentence in Section 3.2 or 6 noting this interpretation (citing Dey & Flinn 2005) would pre-empt referee confusion. No revision required to address a theoretical inconsistency.
 
 ### MC4: H-2A Exclusion and Compositional Threat
 
@@ -124,9 +128,9 @@ That said, the paper has a cluster of concerns that must be resolved before subm
 **Why it matters:** H-2A workers grew from ~50k to ~370k over the sample period, concentrated in hotter states. Their exclusion from NAWS means the observed NAWS workforce is a changing selection of the agricultural workforce. If hotter counties shifted toward H-2A (legal, usually no HI) and away from NAWS workers (undocumented, sometimes HI), the within-county increase in HI rate among NAWS workers is partly a composition effect, not climate adaptation.
 **How to address it:** Obtain county-year H-2A certification counts from DOL and add as a control. At minimum, discuss explicitly and place in limitations.
 
-### RO3: Compensating differentials predicts wage decline — where is it?
-**Why it matters:** If health insurance is a wage substitute (the model's prediction), wages should fall where HI rises. They don't. This undermines the compensating differentials interpretation and raises doubt about whether the HI effect is really an adaptation response or is driven by something else (e.g., state regulation, unionization trends in specialty crops).
-**How to address it:** Test whether workers who receive HI in hotter areas earn lower wages than similar workers without HI (a direct test of the substitution). Or reframe the model to not predict wage substitution (e.g., if employers absorb the cost via profit reduction rather than wage reduction).
+### RO3: ~~Compensating differentials predicts wage decline — where is it?~~ — **RETRACTED: NOT A CONCERN**
+
+**Status:** Retracted. See MC3 above for full reasoning. In brief: CD theory predicts a cross-sectional sorting tradeoff, not a within-firm wage cut when HI is adopted. Dey & Flinn (2005) show wages at HI jobs are *higher* in equilibrium due to HI's productivity effect. The null wage result is theoretically consistent and requires no defense beyond a brief note in the paper.
 
 ### RO4: The effect is driven entirely by specialty crops — is this robust?
 **Why it matters:** The heterogeneity results show the effect is concentrated in specialty crops. Specialty crops are also more heavily unionized (UFW), concentrated in specific states (CA, FL), and have faced specific labor-shortage policy pressures. Is the whole result just California specialty-crop growers expanding HI due to state mandates or labor competition? The paper does not test this.
@@ -178,7 +182,7 @@ That said, the paper has a cluster of concerns that must be resolved before subm
 |----|------|----------|--------|
 | MC1 | MAJOR | Methods / Robustness | OPEN |
 | MC2 | MAJOR | Results / Conclusion | OPEN |
-| MC3 | MAJOR | Framework / Results | OPEN |
+| MC3 | ~~MAJOR~~ | Framework / Results | **RETRACTED** |
 | MC4 | MAJOR | Data / Limitations | OPEN |
 | MC5 | MAJOR | Section 7 | OPEN |
 | mc1 | MINOR | Lines 106–138 | Fixable immediately |
@@ -193,6 +197,6 @@ That said, the paper has a cluster of concerns that must be resolved before subm
 | mc10 | MINOR | Appendix captions | Fixable immediately |
 | RO1 | FATAL | Methods | OPEN |
 | RO2 | FATAL | Data | OPEN |
-| RO3 | FATAL | Framework / Results | OPEN |
+| RO3 | ~~FATAL~~ | Framework / Results | **RETRACTED** |
 | RO4 | ADDRESSABLE | Results | OPEN |
 | RO5 | ADDRESSABLE | Results | OPEN |
