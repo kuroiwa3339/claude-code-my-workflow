@@ -1,0 +1,912 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[hidelinks]{hyperref}
+\usepackage{graphicx}
+\usepackage{mathptmx} % Times New Roman font
+\usepackage{geometry} % margins
+\usepackage{authblk} % affiliations
+\usepackage{indentfirst} % indent first paragraph
+\usepackage{color}
+\usepackage{apacite}
+\usepackage{bibentry}
+\usepackage{ascmac}
+\usepackage{comment}
+\usepackage{natbib}
+\usepackage{titlesec}
+\usepackage{titling}
+\usepackage{booktabs,caption}
+\usepackage[flushleft]{threeparttable}
+\usepackage{array}
+\usepackage{mathtools}
+\usepackage{xltabular}
+\usepackage{subcaption}
+\usepackage{lscape}
+\usepackage{adjustbox}
+\usepackage[title]{appendix}
+\usepackage{gensymb}
+\usepackage{stackengine}
+\usepackage{pgfplots}
+\usepackage{datetime2}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+\usepackage{setspace}
+\usepackage{pdflscape}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Page Setup
+\pagenumbering{arabic}
+\geometry{margin=1in}
+
+% separation between title/authors/affiliations
+\setlength{\affilsep}{1.5em}
+\renewcommand\Affilfont{\footnotesize}
+\renewcommand{\baselinestretch}{1.5}
+
+\newcommand{\sym}[1]{\ensuremath{^{#1}}}
+%\newcommand{\degree}{\ensuremath{^\circ}}
+
+
+
+\makeatletter
+\def\@maketitle{%
+  \newpage
+  \begin{center}%
+  \let \footnote \thanks
+    {\large\bfseries \@title \par}%
+    \vskip \@affilsep%
+    {\large%
+        \begin{tabular}[t]{c}%
+        \@author\\
+        \end{tabular}\par}%
+  \end{center}}
+\makeatother
+% /end Page Setup
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title{Climate Adaptation through Employer-Provided Health Insurance: \\ Evidence from U.S. Agriculture}
+\author{}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+\noindent Rising temperatures increase health risks and worsen working conditions in agriculture, raising important questions about how agricultural labor markets adapt to warming temperatures. This study examines how labor compensation responds to long-run temperature in U.S. agriculture, focusing on employer-sponsored health insurance, which is important for sustaining worker productivity and mitigating workplace health risk. Using 30 years of nationally representative data on crop workers, we employ a moving average specification that exploits within-county variation in local climate normals. We find that workers in counties experiencing higher temperatures are more likely to receive health insurance, but the adjustment is relatively modest. We also do not find adjustment of wages. We further document substantial heterogeneity across crop types, worker characteristics, and time periods. Notably, undocumented workers experience substantially smaller gains in health insurance coverage despite facing similar heat risks, highlighting persistent adaptation inequality within the agricultural workforce. The findings suggest that health insurance serves as an important margin of climate adaptation, but adaptation remains gradual and uneven across vulnerable worker groups, highlighting the policy need for securing agricultural workers' health.
+\end{abstract}
+
+\begin{comment}
+\begin{itemize}
+    \item \cite{park_temperature_2021, rutledge_health_2026}
+    \item Challenge: endogeneity between moving average and other factors (more skilled workers come to hotter areas)?
+\end{itemize}
+\end{comment}
+
+
+\clearpage
+\tableofcontents
+
+\clearpage
+\section{Introduction}
+
+Frequent and prolonged exposure to high temperatures is increasingly making outdoor work, especially in the agricultural sector, more hazardous under climate change \citep{ipcc_climate_2023}. Rising temperatures increase heat-related illnesses \citep{faurie_association_2022}, workplace injuries \citep{dillender_climate_2021, deschenes_climate_2011, park_temperature_2021}, hospitalization \citep{white_dynamic_2017, gould_temperature_2025, aguilar-gomez_hot_2025}, and mortality \citep{deschenes_climate_2011}, particularly among workers engaged in physically demanding outdoor labor such as agriculture. At the same time, heat exposure reduces labor productivity and labor supply \citep{graff_zivin_temperature_2014, somanathan_impact_2021, colmer_temperature_2021}, posing growing challenges for outdoor work.
+
+Recent research has shown that adaptation can substantially reduce the adverse health impacts of climate change. For example, \citet{barreca_adapting_2016} demonstrate that the diffusion of residential air conditioning explains most of the decline in heat-related mortality in the United States during the twentieth century. Similarly, \citet{helo_sarmiento_into_2023} find that access to healthcare services mitigates temperature-related mortality in Colombia, particularly among vulnerable populations. These studies suggest that adaptation occurs not only through physical technologies such as air conditioning, but also through institutions that improve access to healthcare and reduce vulnerability to climate-related health risks. However, little is known about whether labor market institutions themselves respond to climate risks. One of the most important components of work compensation is the provision of health-related fringe benefits, particularly employer-sponsored health insurance. Health insurance improves workers’ access to preventive and curative medical care, which could help mitigate the adverse health consequences of heat exposure. Recent evidence also suggests that employer-provided health insurance increases farmworker productivity \citep{rutledge_health_2026}. As rising temperatures increase both health expenditures and the risk of work-related injuries, access to health insurance may become increasingly valuable for both workers and employers.
+
+
+This issue is particularly important in agriculture, where workers face elevated exposure to heat-related risks but historically have had limited access to employer-provided benefits. Seasonal employment relationships, high labor turnover, and the large presence of vulnerable workers—including migrant laborers—have contributed to relatively low rates of health insurance coverage in the agricultural sector in the U.S. Although the Affordable Care Act and Medicaid expansions have increased access to healthcare for many low-income workers, employer-sponsored insurance remains important, and undocumented workers are generally ineligible for Medicaid and ACA Marketplace subsidies. Consequently, employer-provided health insurance continues to be an important source of healthcare access and financial protection for agricultural workers.
+
+This study examines how exposure to higher temperatures affects employer-provided health insurance and wages in the U.S. We use nationally representative confidential data on U.S. crop workers from 1993 to 2022, which include information on employer-provided health insurance and wages, and county-level weather data. Our main analysis is based on long-term temperature exposure measured by the average temperature during the interview month over the previous ten years. This approach captures the long-run temperature conditions that are more likely to influence employers’ compensation decisions than short-run weather fluctuations. Exploiting variation in long-run local temperature exposure, and controlling for worker characteristics, crop and task categories, and several fixed effects, we estimate how a gradual shift in local climate normal affects employer-provided health insurance provision and wages in agricultural employment.
+
+We find that persistently higher temperatures significantly increase the likelihood that agricultural workers receive employer-provided health insurance, while wages show little response. In contrast, the estimated effects are substantially weaker when using short-run or medium-term temperature measures, suggesting that compensation contracts adjust gradually to sustained increases in temperature rather than to temporary weather fluctuations. We also document substantial heterogeneity across production systems and worker groups. The increase in employer-provided health insurance is concentrated among workers employed in labor-intensive specialty crops and among workers who are more vulnerable to heat exposure, particularly older workers. Furthermore, compared to documented workers, undocumented workers experience much smaller gains in employer-provided health insurance coverage.
+
+Taken together, these findings suggest that health-related fringe benefits constitute an important labor market adaptation mechanism to sustained climate warming. However, this adaptation appears to occur gradually and is distributed unevenly across workers. The limited gains experienced by undocumented workers indicate that vulnerable populations may face barriers to accessing the benefits of adaptation, even as climate-related health risks increase. These results highlight the importance of expanding access to health-related coverage and strengthening workplace protections to reduce climate-related risks for agricultural workers.
+
+
+This study contributes to three strands of literature. First, our findings contribute to the literature on climate change and adaptation in agriculture by showing that labor contracts and fringe benefits constitute an additional margin of climate adaptation. Previous papers find adaptation behaviors in agriculture focusing on production decisions such as crop land adjustment and planting timing \citep{cui_climate_2020, cui_beyond_2020, cui_adapting_2022}. Our results complement previous papers by highlighting employment contracts as an additional margin of adaptation to warming temperatures. While health insurance is provided nationally in some developed countries, various countries, such as developing countries, still lack universal health insurance coverage. Several papers analyze the adaptation of firms to warming temperatures. We contribute to the literature by showing how employers try to adapt to warming temperatures. 
+Second, this paper contributes to the literature on climate inequality by examining heterogeneity among vulnerable groups within the crop workers. Previous studies show that climate change disproportionately affects vulnerable populations through unequal exposure to climate risk and unequal access to adaptation opportunities \citep{park_temperature_2021, rode_workplace_2024, barreca_adapting_2016, zahnow_climate_2025, dang_does_2024}, and agricultural workers are among the populations most exposed to warming temperatures. Our data containing immigration status, such as documented and undocumented, enables us to directly analyze vulnerable populations other than economic disadvantage, who are sometimes not captured by ordinary surveys. These findings complement the climate inequality literature by demonstrating that adaptation itself is unequally distributed across workers even within a sector.
+Third, this paper contributes to the literature on climate change and labor markets. Previous studies primarily examine how rising temperatures affect labor productivity \citep{somanathan_impact_2021} and labor supply \citep{graff_zivin_temperature_2014, colmer_temperature_2021}. Other studies show that labor contracts can mediate the effects of environmental shocks through adjustments in wages and hours worked \citep{franklin_economic_2019}. We extend this literature by showing that labor market adjustment to climate change may occur through non-wage compensation rather than wages. Specifically, we highlight health insurance fringe benefits as an important form of compensating differentials under climate change.
+
+
+\section{Background}
+\subsection{Health insurance in the agricultural labor market}
+Healthcare coverage can play an important role in maintaining workers' health and increasing worker productivity \citep{rutledge_health_2026}. Health insurance leads to the use of health care services, which could reduce the probability that workers get sick and increase the probability that workers recover from illnesses \citep{dizioli_health_2016}. The lack of health insurance may worsen workers' health, reduce their productivity, and increase fatigue on the job \citep[see, e.g.,][]{dizioli_health_2016}. Workers with health insurance miss fewer work days than uninsured workers \citep{dizioli_health_2016}. 
+
+
+In the U.S., the core of the health system is the employer-sponsored health insurance \citep{dizioli_health_2016}. It covers 80 percent of workers ages from 18 to 64 \citep{curchin_complicated_2025}. The share of total compensation to workers has shifted into the form of nonwage fringe benefits in the U.S. since the 1950s \citep{jensen_role_1985}. One factor explaining the predominance of employer-sponsored health insurance is its favorable tax treatment. Employers receive tax advantages when they provide non-discriminatory health insurance coverage to their employees \citep{dizioli_health_2016}. In contrast, the Medicaid program covers around 10 percent, and individual policies purchased through the Affordable Care Act (ACA) cover just under 5 percent of workers.
+
+
+In agriculture, however, health insurance has historically been substantially more limited \citep{luo_health_2018, rutledge_health_2026}. Seasonal employment, high labor turnover, and the prevalence of small-scale farm operations have contributed to low rates of employer-sponsored coverage. In addition, undocumented agricultural workers are generally ineligible for Medicaid and ACA Marketplace subsidies, making access to health insurance particularly limited for this group.\footnote{They may qualify for emergency Medicaid services.} According to \citep{jbs_international_findings_2023}, 62\% of crop workers reported having health insurance through a government program, crop workers' employer, crop workers'/spouse's self-purchased plan, parents' plan, and spouse's employer. 28\% receive health insurance provided by employers in 2021-2022. Around 43\% of workers received health insurance from the government in 2021-2022.
+
+Although recent health care mandates have improved access to healthcare \citep{donkor_effects_2022}, the employer-sponsored health insurance plays an important role. First, even among documented workers, Medicaid eligibility depends on income and varies across states depending on whether a state adopted the ACA Medicaid expansion \citep{donkor_effects_2022, kandilov_impact_2022}. Several major agricultural states, including Florida, Texas, and Georgia, had not adopted the ACA Medicaid expansion during the study period \citep{kandilov_impact_2022}. Second, undocumented agricultural workers are generally ineligible for Medicaid and ACA Marketplace subsidies \citep{luo_health_2018}, making employer-sponsored coverage one of the few available sources of healthcare access. Although the federal Migrant Health Program, established in 1962, provides an important safety net for agricultural workers, utilization of migrant health centers remains relatively limited among farmworkers \citep{luo_health_2018}. Consequently, employer-sponsored health insurance may play a particularly important role in sustaining worker health and productivity in agricultural labor markets. Recent evidence suggests that employer-provided health coverage improves farmworker productivity and generates economic benefits for both workers and employers \citep{rutledge_health_2026}.
+
+%\footnote{The share of receiving health insurance is similar between documented (28\%) and undocumented workers (28\%).} 
+
+
+\subsection{Agricultural labor market under warming temperature}
+Agricultural workers are highly exposed to health and productivity risk due to rising temperatures because many agricultural tasks require prolonged outdoor physical labor. These risks are especially expected to be severe in labor-intensive crop production systems such as specialty crops (e.g., fruits and vegetables) because mechanization is limited and workers spend long hours for hand harvesting. The burden of heat exposure is also unevenly distributed across workers. Agricultural labor markets rely heavily on vulnerable populations, including undocumented immigrants and older workers, who may face both greater physiological sensitivity to heat and more limited access to healthcare and workplace protections. 
+
+Health insurance may become increasingly valuable under warming temperatures for both workers and employers. There are two reasons. First, heat exposure increases the risk of heat-related illness, occupational injury, hospitalization, and medical expenditures. As these risks become more frequent, access to healthcare and financial protection through health insurance becomes increasingly valuable. In addition, health insurance may help workers recover more quickly from illness and injury, thereby reducing productivity losses associated with heat exposure.
+Second, labor shortages increase the importance of worker recruitment and retention. Agricultural employers in many regions have faced persistent difficulties hiring and retaining workers over the past decade. Under tighter labor market conditions, employers may have stronger incentives to improve compensation packages, including employer-sponsored health insurance, in order to attract, retain, and sustain productive workers.
+These considerations suggest that employer-sponsored health insurance may become an increasingly important component of labor compensation under sustained climate warming, serving both as a productivity-enhancing investment and as a workplace amenity.
+
+\clearpage
+\section{Conceptual framework}
+
+In this section, we develop a simple model of employer-sponsored health insurance (ESHI) provision under warming temperatures. Our framework closely follows \citet{zivin_industrial_2016}, who model air conditioning adoption as both a productivity-enhancing investment and a workplace amenity. In their framework, firms adopt air conditioning because it mitigates heat-related productivity losses and improves workplace conditions for workers. We extend this logic to employer-sponsored health insurance. Health insurance has been shown to improve worker health and productivity in agriculture \citep{rutledge_health_2026}, while also providing value to workers as a non-wage job attribute. Economic evidence further suggests that high temperatures reduce labor productivity through heat stress, workplace injuries, and illness \citep{graff_zivin_temperature_2014}. We therefore model employer-sponsored health insurance as both a productivity-enhancing investment and a workplace amenity that mitigates the adverse consequences of heat exposure. This framework highlights two channels through which rising temperatures may increase employers’ incentives to provide health insurance.
+
+\subsection{Health Insurance as an Investment}
+
+Suppose that each farm hires labor $L$ to produce output. Let subscript $I$ denote farms that provide health insurance and $U$ denote farms that do not provide health insurance. Farms face a common heat exposure level $H \in [0,1]$, where higher values correspond to more severe heat conditions. Let $P$ denote output prices and $w$ denote the market wage.
+
+Output is given by $(1-\phi H)L^{\alpha}$ when $I=0$ and by $L^{\alpha}$ when $I=1$, where $0<\alpha<1$ and $\phi>0$. The parameter $\alpha$ denotes the output elasticity of labor, while $\phi$ captures the productivity loss associated with heat exposure. For simplicity, we assume that health insurance fully mitigates heat-related productivity losses. The qualitative predictions remain unchanged if health insurance only partially mitigates these losses.
+
+\begin{equation}
+\pi_U
+=
+P(1-\phi H)L_U^{\alpha}
+-
+wL_U,
+\end{equation}
+
+\begin{equation}
+\pi_I
+=
+PL_I^{\alpha}
+-
+(w+c)L_I,
+\end{equation}
+
+where $c$ denotes the per-worker cost of providing health insurance.
+
+The first-order conditions are
+
+\begin{equation}
+\alpha P(1-\phi H)L_U^{\alpha-1}
+=
+w,
+\end{equation}
+
+\begin{equation}
+\alpha P L_I^{\alpha-1}
+=
+w+c.
+\end{equation}
+
+Optimal labor demand is therefore
+
+\begin{equation}
+L_U^*
+=
+\left(
+\frac{\alpha P(1-\phi H)}
+{w}
+\right)^{\frac{1}{1-\alpha}},
+\end{equation}
+
+\begin{equation}
+L_I^*
+=
+\left(
+\frac{\alpha P}
+{w+c}
+\right)^{\frac{1}{1-\alpha}}.
+\end{equation}
+
+To determine whether farms provide health insurance, we compare optimized profits under the two regimes. Farms provide health insurance whenever the optimized profits under health insurance exceed those without health insurance:
+
+\begin{equation}
+\pi_U(L_U^*)
+\le
+\pi_I(L_I^*).
+\end{equation}
+
+Substituting the optimized labor demands into the profit functions yields
+
+\begin{equation}
+P(1-\phi H)(L_U^*)^{\alpha}
+-
+wL_U^*
+\le
+P(L_I^*)^{\alpha}
+-
+(w+c)L_I^*.
+\end{equation}
+
+As heat exposure increases, profits decline more rapidly in uninsured farms because heat reduces labor productivity. Providing health insurance involves an additional labor cost through insurance premiums, but it also mitigates heat-related productivity losses. Consequently, the relative profitability of providing health insurance increases with heat exposure. If the additional labor costs associated with health insurance are sufficiently small relative to the productivity gains from mitigating heat-related productivity losses, the net benefit of providing health insurance increases with heat exposure. This model therefore predicts that employer-sponsored health insurance is more likely to be provided in hotter environments.
+
+\subsection{Health Insurance as a Workplace Amenity}
+
+We now extend the model to allow workers to treat employer-sponsored health insurance as a workplace amenity. Following the compensating differentials literature, workers employed by firms that do not provide health insurance require additional compensation.
+
+Let $X$ denote the compensating wage differential required by workers employed at firms without health insurance. Profits for uninsured firms are now given by
+
+\begin{equation}
+\pi_U
+=
+P(1-\phi H)L_U^{\alpha}
+-
+(w+X)L_U.
+\end{equation}
+
+Profits for insured firms remain unchanged. Thus, insured firms incur the insurance cost c, whereas uninsured firms must compensate workers through the wage differential X.
+
+The first-order condition for uninsured firms becomes
+
+\begin{equation}
+\alpha P(1-\phi H)L_U^{\alpha-1}
+=
+w+X,
+\end{equation}
+
+which implies
+
+\begin{equation}
+L_U^*
+=
+\left(
+\frac{\alpha P(1-\phi H)}
+{w+X}
+\right)^{\frac{1}{1-\alpha}}.
+\end{equation}
+
+As before, firms provide health insurance whenever optimized profits under health insurance exceed those without health insurance.
+Because uninsured firms must pay the compensating differential X, the relative profitability of providing health insurance is higher than in the benchmark model.
+
+The key insight from this model is that health insurance serves both as a productivity-enhancing investment and as a workplace amenity. As temperatures rise, firms can mitigate productivity losses associated with heat exposure while also reducing compensating wage differentials by providing health insurance. Consequently, the relative profitability of offering health insurance increases with heat exposure. This model, therefore, predicts that farms operating in hotter environments are more likely to provide employer-sponsored health insurance.
+
+The compensating wage differential may vary across workers. Undocumented workers may have weaker bargaining power and fewer outside employment opportunities than documented workers, implying a smaller compensating differential for jobs without health insurance. Consequently, employers may face weaker incentives to expand health insurance coverage for undocumented workers. This extension suggests that adaptation through employer-sponsored health insurance may be distributed unevenly across worker groups and provides a potential explanation for adaptation inequality in agricultural labor markets.
+
+Although the model assumes that health insurance completely eliminates heat-related productivity losses, the qualitative prediction remains unchanged if health insurance only partially mitigates such losses. Higher temperatures continue to increase the relative value of providing health insurance, leading firms to be more likely to offer coverage in hotter environments.
+
+This framework yields two empirical predictions. First, employer-sponsored health insurance should be more prevalent in hotter environments because the relative profitability of providing coverage increases with heat exposure. Second, because the compensating wage differential may vary across workers, the response of health insurance provision may be heterogeneous across worker groups. In particular, workers with weaker bargaining power, such as undocumented workers, may experience smaller increases in employer-sponsored health insurance coverage.
+
+
+
+\clearpage
+\section{Data}
+\subsection{National Agricultural Worker Survey from 1993 to 2022}
+We use employee-level data from the confidential version of the National Agricultural Worker Survey (NAWS). The NAWS is the nationally representative survey of demographic and employment information of hired crop workers. The crop workers are surveyed in three cycles each year. The H-2A workers are not included in the NAWS data. The information is collected from crop workers through face-to-face interviews. The NAWS data includes information on the interview date, the county of interview, the crop that workers are working in at the time of the survey, their job tasks, workers' demographic characteristics (e.g., age, sex, foreign born, legal status), and labor-related variables.  
+
+The labor-related variables include hourly wages and employer-provided health insurance. We construct four binary variables indicating whether workers receive employer-provided fringe benefits. We construct a binary variable for employer-provided health insurance based on information on health insurance coverage for illnesses or injuries occurring off the job.\footnote{Specifically, we use question D24: “If you are injured or get sick OFF THE JOB (e.g., at home), does your employer provide health insurance or provide or pay for your health care?”} 
+
+It also includes workers’ compensation and unemployment insurance coverage. We construct a workers’ compensation (medical cost) variable based on information on employer-provided medical coverage for work-related injuries or illnesses.\footnote{Specifically, we use question D22: “If you are injured AT WORK or get sick as a result of your work, does your employer provide health insurance or provide or pay for your health care?”} We construct a workers’ compensation (wage replacement) variable based on whether workers receive wage payments while recovering from work-related injuries or illnesses.\footnote{Specifically, we use question D23: “If you are injured AT WORK or get sick as a result of your work, do you get any payment while you are recuperating (i.e., workers’ compensation)?”} Finally, we construct a binary variable for unemployment insurance coverage.\footnote{Specifically, we use the question: “Are you covered by unemployment insurance if you lose this job?”}
+
+\subsection{Weather data from 1983 to 2021}
+We use daily level county weather data, which originally comes from PRISM data.\footnote{The data comes from the AG DATA from Aaron Smith. https://www.aaronsmithagecon.com/download-us-weather-data.} We collected daily average temperature and precipitation. We aggregated the county-level daily weather information and the county-level monthly weather information. We constructed the share of days with different temperature bins. The weather variables are weighted by cropland. Since the content of labor contracts, such as wages and fringe benefits, may be decided before the start of the task, we construct the historical weather variables to capture the weather in the interview month in the past years. We specifically chose the temperature bins by using the past 10, 5, and 1 years.  
+
+\subsection{Additional data}
+Since the NAWS does not contain information on farm size, we supplement our analysis with county-level data from the Census of Agriculture. Specifically, we construct the share of large farms, defined as farms employing more than 10 hired workers, among all farms with hired labor in each county. Because the Census of Agriculture is conducted every five years, we linearly interpolate these measures to obtain annual county-level estimates and use them as a proxy for changes in the structure and scale of local agricultural production. Controlling for farm size is important because larger farms are generally more likely to provide employer-sponsored benefits, including health insurance and unemployment insurance. If rising temperatures affect farm consolidation or production scale, estimates of the relationship between temperature and fringe benefits may partly reflect changes in farm structure rather than direct adaptation through labor compensation. Because Census of Agriculture data are only available beginning in 1997, specifications including this control are restricted to the post-1997 sample and contain fewer observations than our baseline analysis.
+
+
+
+\subsection{Summary statistics}
+Table \ref{summarystat} shows the summary statistics. The table is not weighted by sampling weight. The average age of crop workers is around 36 years old. Around 50\% of crop workers are undocumented workers. The hourly wages are around 9 dollars. The share of employer-sponsored health insurance is around 14\%. The share of workers' compensation for medical is around 76\%, while the share of workers' compensation for wage replacement is around 60\%. The share of unemployment insurance is around 50\%. Figure \ref{trendfringewage} shows the increasing trend of wages, employer-provided health insurance, and worker compensation (wage replacement) from 1993 to 2022. In contrast, the workers' compensation (medical costs) and unemployment insurance are relatively stable. Appendix Figure \ref{temperaturedistribution} shows the temperature distribution in t-1. We find significant variation in temperature.  Appendix Figure \ref{cropandtask} shows the distribution of crops and tasks that workers are working on. Fruits and vegetables account for more than 60\%. Harvesting work also accounts for a major part of the crop work. 
+
+
+\begin{table}[!h] 
+\centering 
+\caption{Summary statistics}
+  \footnotesize
+  \label{summarystat} 
+\begin{tabular}{@{\extracolsep{5pt}}lccccc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+Statistic & \multicolumn{1}{c}{N} & \multicolumn{1}{c}{Mean} & \multicolumn{1}{c}{St. Dev.} & \multicolumn{1}{c}{Min} & \multicolumn{1}{c}{Max} \\ 
+\hline \\[-1.8ex] 
+Hourly Wage         &       57011&        8.76&        3.55&           2&          30\\
+Health insurance (dummy)&       58095&        0.14&        0.35&           0&           1\\
+Work compensation: medical (dummy)&       58095&        0.76&        0.43&           0&           1\\
+Work compensation: payment (dummy)&       58095&        0.57&        0.50&           0&           1\\
+Unemployment insurance (dummy)&       58095&        0.45&        0.50&           0&           1\\
+Age (yrs)           &       58095&       36.38&       13.06&          14&          94\\
+Female (dummy)      &       58095&        0.20&        0.40&           0&           1\\
+Undocumented (dummy)&       58095&        0.46&        0.50&           0&           1\\
+Foreign born (dummy)&       58095&        0.80&        0.40&           0&           1\\
+Working years in the farm (yrs)&       58095&       13.16&       11.19&           0&          78\\
+Employer: contractor (dummy)&       58095&        0.15&        0.36&           0&           1\\
+9-12C               &       58095&        0.06&        0.10&           0&           1\\
+13-16C              &       58095&        0.12&        0.14&           0&           1\\
+17-20C              &       58095&        0.13&        0.13&           0&           1\\
+21-24C              &       58095&        0.15&        0.12&           0&           1\\
+25-28C              &       58095&        0.17&        0.15&           0&           1\\
+29-32C              &       58095&        0.16&        0.16&           0&           1\\
+33-36C              &       58095&        0.12&        0.19&           0&           1\\
+37-50C              &       58095&        0.05&        0.13&           0&           1\\
+\hline
+\end{tabular} 
+\subcaption*{Note: Sampling weights are not applied.}
+\end{table} 
+
+\begin{figure}[h!]
+\caption{Trend of health insurance and wage, 1993-2022. The graph shows trends in health insurance and hourly wages. All of them are unweighted.}
+\label{trendfringewage}
+\begin{subfigure}{1\textwidth}
+  \centering
+  \includegraphics[width=1\linewidth]{line_wagehr.pdf}
+\end{subfigure}
+\end{figure}
+
+
+\clearpage
+\section{Method}
+This study examines the extent to which wages and fringe benefits respond to past temperature conditions. Because labor contracts in U.S. agriculture are typically determined on a seasonal basis, we link workers to historical temperature conditions in the county and month of work. We assume that agricultural employers set compensation contracts based on prevailing labor market conditions, the type of agricultural work performed, and local climate conditions experienced in previous years. Since compensation contracts are determined through a bargaining process between employers and workers and are likely to adjust gradually over time, our main specification focuses on a moving average specification, specifically exploiting long-run temperature exposure similar to \cite{cui_climate_2020, cui_adapting_2022, cui_climate_2024}. Specifically, we use long-term average temperature measures while controlling for worker characteristics and multiple fixed effects. Therefore, we examine how gradually shifting temperature normals induce health insurance and wage adjustment. We also examine whether compensation responds differently to short-term and medium-term temperature variation.
+
+\begin{equation}
+\label{maineq1}
+    Y_{i,c,s,m,y} = \beta_0 + \sum_{T=1}^{8} \beta_{1T} Temp_{T, c,s,m,y-1:y-10}  + \beta_2 X_{i} + \beta_3 W_{c,s,m,y}  + \alpha_{c} + \alpha_{s,y} + \alpha_{m} + \epsilon_{i,c,s,m,y}
+\end{equation}
+
+\noindent The dependent variable $Y_{i, c, s, m, y}$ represents the outcome for individual $i$ in county $c$, state $s$, month $m$, and year $y$. The outcomes include binary indicators for fringe benefits and the log of hourly wages. Specifically, the binary variables indicate whether the individual receives employer-provided health insurance.
+
+$Temp_{T, c, s, m, y-1:y-10}$ denotes the $3^\circ$C temperature-bin variables in county $c$, state $s$, month $m$, and year $y-1:y-10$. These variables measure the share of days in which the average temperature falls within a given temperature bin during the relevant working months in county $c$ over the previous one to ten years.\footnote{Moving average specification is used in various paper such as \cite{cui_climate_2020, cui_adapting_2022}.} In addition to the ten-year measure, we also construct temperature variables based on the previous one-year and five-year periods. The temperature distribution is divided into nine bins (in degrees Celsius): below $8^\circ$C, $9$--$12^\circ$C, $13$--$16^\circ$C, $17$--$20^\circ$C, $21$--$24^\circ$C, $25$--$28^\circ$C, $29$--$32^\circ$C, $33$--$36^\circ$C, and above $37^\circ$C. We use the $17$--$20^\circ$C category as the omitted reference group. Therefore, the main estimates can be interpreted as the effect of a one-percentage-point increase in the share of days within a given temperature bin over the past ten years, relative to exposure to temperatures in the reference category.
+
+$X_{i}$ is a set of individual-level controls and includes the age, education, immigration status (documented or undocumented), foreign-born, and years of working in the current employer. $W_{c,s,m,y}$ denotes a vector of additional weather variables, specifically total precipitation and its square. $\alpha_{c}$ is the county fixed effect to control for time-invariant unobserved characteristics such as environmental conditions and production structure. $\alpha_{s,y}$ controls for state by year fixed effects to control for state-level policy shocks such as labor regulation and labor market shocks. $\alpha_{m}$ controls for month fixed effects to control for seasonality in agriculture. The regression is weighted by the sampling weight. We use clustered standard errors by county to allow error terms to be correlated within a county. 
+
+The identifying assumption is that the weather variables are uncorrelated with error terms after controlling for fixed effects and worker-level characteristics. One of the important limitations is that we cannot include individual fixed effects to control for unobserved worker characteristics such as skill and motivation. If more motivated workers tend to come to work in hotter regions, and those workers tend to receive higher wages and higher fringe benefits, the estimates would be biased. While we cannot completely address this problem, we believe that including work-level characteristics such as age, sex, documented, foreign-born, years of farm work experience, and working under a contractor can control most of those factors. 
+
+
+\clearpage
+\section{Results}
+Table \ref{mainresult} shows the estimated coefficients of each temperature bin. Each temperature bin represents the share of days in the past 10 years in each interview month. All of the models include individual characteristics, precipitation, county fixed effects, state-by-year fixed effects, month fixed effects, crop fixed effects, and task fixed effects. 
+
+We find that the higher temperature bins increase the probability of workers covered by employer-provided health insurance. The coefficient estimate is 0.25 for the bin of above 37\degree C and statistically significant at 5\% level. In our data, a uniform upward shift in daily maximum temperatures generates approximately a one percentage-point increase in the share of extremely hot days (37–50°C). A one percentage-point increase in the share of extremely hot days raises the probability of employer-provided health insurance coverage by 0.25 percentage points. Relative to the baseline health insurance coverage rate of 15\%, this corresponds to a 1.6\% increase in coverage. We also find that the bins of 33-36 \degree C is also positive and statistically significant at 10\% level. These results are consistent with the fact that employer-sponsored insurance not only provides health coverage benefits but also increases productivity and generates surplus for both workers and employers \citep{rutledge_health_2026}.
+In contrast, the estimates for cold temperature and modest temperature are not statistically different from zero. Those results show that a gradual increase in the hot temperature increases the probability of health insurance, although the magnitude is relatively modest. 
+
+The estimated coefficients on the control variables are generally consistent with expectations. For example, older workers, workers with longer farm experience, and workers with longer job tenure are more likely to receive employer-sponsored health insurance, whereas undocumented workers are less likely to be covered.
+
+In contrast, we find little evidence that wages respond to long-term temperature exposure. Most coefficient estimates are small and statistically insignificant. These results suggest that compensation adjustments to sustained warming occur through health-related fringe benefits rather than wages. This interpretation is consistent with the compensating differentials literature, which emphasizes that compensation for workplace risks may be provided through non-wage benefits as well as direct wage payments \citep{lavetti_compensating_2023}. It is also consistent with studies showing that employer-sponsored health insurance forms an important component of compensation packages and may substitute for wage adjustments \citep{dey_equilibrium_2005}.
+
+Overall, we find that as temperature increases, the probability of having health insurance tends to increase, while wages do not change. These results imply that health-related benefits tend to expand to the long-term temperature increase. 
+
+We also examine whether shorter time temperature variation affects the wages and fringe benefits. To examine it, we exploit the past 1-year temperature variation and the past 5-year temperature variation. We do not find significant impacts of temperature in the past 1 year on those outcomes (Appendix \ref{mainresultpast1}). Regarding the past 5 years of temperature, while we find some evidence of increasing workers' compensation under high temperature, we basically do not find significant impacts on those outcomes (Appendix \ref{mainresultpast5}). These results confirm that the changes in the fringe benefit are mainly driven by the long-term temperature. At the same time, they also imply that compensating differentials for warming temperatures are significantly limited in the short and mid-term temperature increase. These results are consistent with \citep{park_temperature_2021}. 
+
+
+\begin{table}[h!]
+\caption{Impacts of the average temperature from t-1 to t-10 on the fringe benefit and wages. The table shows the coefficient estimates from Eq.~\ref{maineq1}. The outcome variables are health insurance and wages. Standard errors are clustered at the county level.}
+\label{mainresult}
+\centering
+\footnotesize
+\begin{tabular}{l*{2}{c}}
+\hline\hline
+                    &\multicolumn{1}{c}{(1)Health ins.}&\multicolumn{1}{c}{(2)Wage}\\
+\hline
+Below 8C            &       0.012         &       0.025         \\
+                    &     (0.100)         &     (0.058)         \\
+9-12C               &      -0.043         &       0.047         \\
+                    &     (0.102)         &     (0.063)         \\
+13-16C              &       0.202         &       0.052         \\
+                    &     (0.173)         &     (0.098)         \\
+17-20C              &       0.000         &       0.000         \\
+                    &         (.)         &         (.)         \\
+21-24C              &       0.084         &       0.053         \\
+                    &     (0.172)         &     (0.097)         \\
+25-28C              &       0.204\sym{*}  &       0.058         \\
+                    &     (0.111)         &     (0.059)         \\
+29-32C              &       0.134         &       0.014         \\
+                    &     (0.116)         &     (0.064)         \\
+33-36C              &       0.213\sym{*}  &       0.014         \\
+                    &     (0.114)         &     (0.076)         \\
+Above 37C           &       0.251\sym{**} &       0.028         \\
+                    &     (0.107)         &     (0.075)         \\
+Precipitation       &       0.002         &       0.027\sym{***}\\
+                    &     (0.012)         &     (0.009)         \\
+Precipitation (squared)&       0.001         &      -0.004\sym{***}\\
+                    &     (0.002)         &     (0.001)         \\
+Age (yrs)           &       0.005\sym{***}&       0.011\sym{***}\\
+                    &     (0.001)         &     (0.001)         \\
+Age (squared)       &      -0.000\sym{***}&      -0.000\sym{***}\\
+                    &     (0.000)         &     (0.000)         \\
+Female (dummy)      &       0.005         &      -0.049\sym{***}\\
+                    &     (0.010)         &     (0.005)         \\
+Foreign born (dummy)&      -0.014         &      -0.033\sym{***}\\
+                    &     (0.009)         &     (0.008)         \\
+Undocumented (dummy)&      -0.050\sym{***}&      -0.040\sym{***}\\
+                    &     (0.008)         &     (0.005)         \\
+Working years in the farm (yrs)&       0.001\sym{***}&       0.002\sym{***}\\
+                    &     (0.000)         &     (0.000)         \\
+Working year of this employer (yrs)&       0.005\sym{***}&       0.006\sym{***}\\
+                    &     (0.001)         &     (0.001)         \\
+Employer: contractor (dummy)&      -0.063\sym{***}&      -0.005         \\
+                    &     (0.010)         &     (0.007)         \\
+\hline
+State-by-year FE    &         Yes         &         Yes         \\
+Month FE            &         Yes         &         Yes         \\
+County FE           &         Yes         &         Yes         \\
+Crop FE             &         Yes         &         Yes         \\
+Task FE             &         Yes         &         Yes         \\
+Observations        &   64713.000         &   62968.000         \\
+R-squared           &       0.308         &       0.754         \\
+\hline\hline
+\end{tabular}
+\end{table}
+
+
+
+\subsection{Robustness check}
+\noindent \textbf{Different fixed effects}
+To examine the robustness of our results, we estimate specifications with alternative fixed effects. Specifically, we add (1) county-specific linear time trends to account for gradual county-level changes that may be correlated with long-run temperature trends, such as changes in agricultural production systems, farm consolidation, labor market conditions, technological adoption, and demographic shifts. We also add (2) crop-by-year fixed effects to absorb crop-specific shocks that vary over time, including changes in commodity prices, labor demand, production practices, profitability, and compensation arrangements. (3)We also show results using year fixed effects and month fixed effects. These additional controls help ensure that our estimates are not driven by unrelated long-run changes in local agricultural systems or crop-specific trends. We find that our main results remain qualitatively similar across these alternative specifications (Figure \ref{mainresultdiffe}).
+
+\vspace{0.5cm}
+\noindent \textbf{Spouse's health insurance}
+One important variable that affects the employer's sponsored health insurance is the status of the spouse's health insurance. Married male farm workers could have access to employers' sponsored health insurance through their spouses' employers' health insurance \citep{kandilov_effect_2010}. A crop worker with the spouse's health insurance may not necessarily pursue employer-sponsored health insurance. Therefore, we add the binary variable of the spouse's health insurance provided by the spouse's employer. Since this information is available from 1999, the analysis is restricted to the sample from 1999 to 2022. The coefficient estimate of the bin above 37 \degree C is positive and statistically significant (Appendix Figure \ref{mainresultwithspouse}). 
+
+
+\vspace{0.5cm}
+\noindent \textbf{Controlling for county-level large farm share}
+Since the NAWS does not contain information on farm size, we supplement our analysis with county-level data from the Census of Agriculture. Specifically, we construct the share of farms employing more than 10 hired workers among all farms with hired labor in each county. Larger farms are generally more likely to provide employer-sponsored benefits due to economies of scale and lower per-worker administrative costs. Consequently, part of the estimated temperature effect may operate through changes in local agricultural structure if long-run warming affects the distribution of farm size. To assess the importance of this channel, we include the county-level share of large farms as an additional control variable. Although this variable may itself be influenced by long-run climate conditions, controlling for it allows us to examine whether the estimated temperature effect persists after accounting for structural changes in local agriculture. We find that the estimated temperature effects remain qualitatively unchanged, suggesting that the positive relationship between temperature and employer-sponsored health insurance is not solely driven by changes in local farm size.
+
+
+\clearpage
+\begin{figure}[h!]
+\begin{subfigure}{1\textwidth}
+\centering
+\includegraphics[width=.8\linewidth]{coef_offinsu_past10y_all_difmodel.pdf}
+\end{subfigure}
+\begin{subfigure}{1\textwidth}
+\centering
+\includegraphics[width=.8\linewidth]{coef_loghourlywage_past10y_all_difmodel.pdf}
+\end{subfigure}
+\caption{Impacts of the average temperature from t-1 to t-10 on the fringe benefit and wages (different fixed effects). The graphs show the coefficient estimates from Eq.~\ref{maineq1}. The outcome variables are health insurance and wages. The fixed effects are presented in the graph. All specifications include control variables (age, age square, female dummy, foreign-born dummy, undocumented worker dummy, year of farmwork, year of working for the current employer, contractor dummy). Standard errors are clustered at the county level.}
+\label{mainresultdiffe}
+\end{figure}
+
+
+
+\clearpage
+\vspace{0.5cm}
+\noindent \textbf{Other fringe benefit: workers' compensation and unemployment insurance} 
+While our main analysis focuses on employer-sponsored health insurance, agricultural workers may also receive other fringe benefits, including workers’ compensation and unemployment insurance. Compared with health insurance, however, these benefits are more heavily regulated and institutionally determined. Although agricultural employers are partially exempt from workers’ compensation and unemployment insurance requirements in some states, coverage is still largely governed by statutory rules rather than employer discretion \citep{jbs_international_findings_2023}.\footnote{Depending on the state, some agricultural employers voluntarily provide workers’ compensation coverage \citep{mceowen_workers_2015} and voluntarily elect unemployment insurance coverage for their workers \citep{cook_marylands_2025}.} Consequently, employers may have less flexibility to adjust these benefits in response to climate-related risks, making them potentially less responsive to warming temperatures than employer-sponsored health insurance. Consistent with their institutional nature, coverage rates for these programs are substantially higher than those for employer-sponsored health insurance. In our sample, 72\% of workers are covered by workers’ compensation in the event of a work-related injury, and 45\% are covered by unemployment insurance \citep{jbs_international_findings_2023}.
+
+
+We find little evidence that workers’ compensation for medical treatment responds to long-term temperature exposure. In contrast, workers’ compensation for wage replacement increases modestly in response to extreme heat, with the coefficient on temperatures above 33-36\degree C reaching approximately 0.3 and remaining statistically significant at the 5\% level. We find no evidence that unemployment insurance coverage responds to temperature exposure. Taken together, these findings suggest that more heavily regulated forms of worker protection exhibit limited adjustment to warming temperatures.
+
+
+
+
+\clearpage
+\subsection{Heterogeneity Across Crops, Age and Time}
+\vspace{0.5cm}
+\noindent \textbf{Field crop vs specialty crop} We examine whether the impacts of temperature on health-related fringe benefits are stronger for workers who tend to receive more temperature exposure and who are vulnerable to temperature. If the temperature increase health risk, those groups may be affected more. We exploit the variation of crop type and workers' age to analyze it. Temperature impacts on wages and fringe benefits may change depending on the crop type that crop workers are working on. While the labor intensity for specialty crops tends to be intense due to hand picking, that of field crops may be less intensive due to the use of machines such as tractors. That heterogeneity would affect the temperature sensitivity to wages and fringe benefits. Therefore, we divide the sample into the sample of field crops and specialty crops (Appendix \ref{listfieldspecialty}). 
+We find that fringe benefits tend to increase for workers who are working on specialty crops (Figure \ref{hetero1}). The coefficient estimate for the field crop is not statistically significant with high confidence intervals, possibly because of the small sample size. Those results are basically consistent with the view that the adjustment in the compensation is more sensitive for workers working on high-risk work in agriculture. 
+
+
+\vspace{0.5cm}
+\noindent \textbf{Worker heterogeneity: young people vs old people}
+The temperature impacts on people's health vary depending on demographic characteristics. Old workers may be more vulnerable to warming temperatures. We also divide the sample into groups of crop workers with an age below 30, and with an age above 50. We find that the coverage of health insurance for people aged above 50 increased in response to warming temperatures (Figure \ref{hetero1}). Those results are consistent with previous literature showing that elderly people are more affected by high temperatures. 
+
+Overall, the heterogeneity analysis shows that temperature impacts on the increase in the health-related fringe benefit tend to focus on workers who are vulnerable to heat exposure. These results support the hypothesis that temperature increases the health risk, which leads to an increase in the coverage of health insurance and workers' compensation. 
+
+
+\begin{figure}[h!]
+\begin{subfigure}{1\textwidth}
+\centering
+\includegraphics[width=.8\linewidth]{coef_offinsu_past10y_hetero1.pdf}
+\end{subfigure}
+\begin{subfigure}{1\textwidth}
+\centering
+\includegraphics[width=.8\linewidth]{coef_loghourlywage_past10y_hetero1.pdf}
+\end{subfigure}
+\caption{Heterogeneous impacts of the average temperature from t-1 to t-10 on the fringe benefit and wages by task and by age. The graphs show the coefficient estimates from Eq.~\ref{maineq1}. The outcome variables are health insurance, workers' compensation, wages, and unemployment insurance. All specifications include county fixed effects, state-by-year fixed effects, month fixed effects and control variables (age, age square, female dummy, undocumented dummy, foreign-born dummy, year of doing farm work, contractor dummy). Standard errors are clustered at the county level.}
+\label{hetero1}
+\end{figure}
+
+
+\vspace{0.5cm}
+\noindent \textbf{Temporal heterogeneity: 1993-2007 (15 yrs) and 2008-2022 (15 yrs)}
+Agricultural labor shortages have become more serious in the U.S. over the past decade. Many farms have difficulty hiring crop workers, suggesting that workers have greater bargaining power. Under these circumstances, workers do not necessarily accept working with a higher health risk. We expect that employers may provide higher wages and more fringe benefits. To examine it, we divide the sample into two periods. We find that the impacts of the temperatures on health insurance and workers' compensation are more pronounced in recent years, specifically 2008-2022 (Figure \ref{hetero2}). These results probably imply that the recent labor shortages in the agricultural labor market may cause agricultural employers to provide health-related fringe benefits in response to warming temperatures to attract and sustain crop workers. 
+
+
+\clearpage
+\section{Adaptation Inequality}
+A growing literature highlights that both the impacts of climate change and the benefits of adaptation are unevenly distributed across populations. Previous studies show that vulnerable groups, including low-income households, outdoor workers, and the elderly, are disproportionately exposed to climate risks and often face more limited access to adaptation opportunities. We therefore examine whether health insurance adjustments in response to warming temperatures differ among vulnerability groups in agriculture.
+
+
+In U.S. agricultural labor markets, legal status is an important determinant of workers' vulnerability. Undocumented workers constitute a substantial share of the agricultural workforce and often face fewer employment opportunities outside agriculture and weaker bargaining power than documented workers. As a result, they may be more likely to accept lower wages and harsher working conditions. Consistent with these institutional constraints, our baseline results show that undocumented workers are less likely to receive employer-sponsored health insurance and earn lower wages than documented workers. Figure \ref{trendfringewageamongdocumentundocument} also shows that wages and health insurance for undocumented workers are lower than those of documented workers. They are also less likely to receive other forms of fringe benefits, including workers' compensation and unemployment insurance. 
+
+
+Due to those constraints, employer-sponsored health insurance may represent one of the few available sources of health-related protection for undocumented workers. While employers may not be able to offer traditional health insurance without formal immigration status, employers still can offer alternative assistance such as health care stipends and paying for a portion of medical expenses \citep{college_of_agricultural_sciences_the_pennsylvania_state_university_navigating_2025}.
+
+
+\vspace{0.5cm}
+\noindent \textbf{Worker heterogeneity: documented vs undocumented}
+Figure \ref{hetero2} shows the temperature impacts on health insurance and wages between documented workers and undocumented workers. 
+We find that documented workers tend to receive health insurance under high temperatures. In contrast, regarding workers' compensation, undocumented workers tend to receive workers' compensation. These results imply that undocumented workers do not benefit from health insurance. We also find that the wages for undocumented workers do not increase in response to temperature, which implies that limited increases in health insurance are not complemented by wage increases. 
+
+
+Overall, these results highlight significant exclusion from the expansion of health insurance for undocumented workers. Even under warming temperatures, vulnerable groups such as undocumented workers cannot get health-related benefits, which imposes significant risk on those population groups and leads to a decline in agricultural labor supply for those groups in the future. 
+
+
+\begin{figure}[h!]
+\begin{subfigure}{1\textwidth}
+\centering
+\includegraphics[width=.8\linewidth]{coef_offinsu_past10y_hetero2.pdf}
+\end{subfigure}
+\begin{subfigure}{1\textwidth}
+\centering
+\includegraphics[width=.8\linewidth]{coef_loghourlywage_past10y_hetero2.pdf}
+\end{subfigure}
+\caption{Heterogeneous impacts of the average temperature from t-1 to t-10 on the fringe benefit and wages by time and by legal status. The graphs show the coefficient estimates from Eq.~\ref{maineq1}. The outcome variables are health insurance, workers' compensation, wages, and unemployment insurance. All specifications include county fixed effects, state-by-year fixed effects, month fixed effects, and control variables (age, age square, female dummy, undocumented dummy, foreign-born dummy, year of doing farm work, contractor dummy). Standard errors are clustered at the county level.}
+\label{hetero2}
+\end{figure}
+
+
+
+
+\clearpage
+\section{Conclusion}
+This study examines how exposure to higher temperatures affects health insurance and wages in the U.S. agriculture sector using 30 years of crop worker data. We find that persistently higher temperatures increase the likelihood that agricultural workers receive employer-provided health insurance, while wages show little change. We also find important differences across workers and production systems. The increase in health insurance is concentrated in more labor-intensive work, especially specialty crops, and among more temperature-vulnerable workers, particularly older workers. Although documented workers experience some increase in health insurance, undocumented workers gain much less access to employer-provided health insurance. 
+
+Overall, our findings suggest that agricultural labor markets adapt to rising temperatures primarily through non-wage compensation rather than wage adjustments. However, these responses appear to represent a form of partial adaptation rather than complete protection against climate-related risks. While employer-provided health insurance may help mitigate some of the health and financial consequences of heat exposure, it does not eliminate the underlying health risks associated with rising temperatures. Consequently, the observed increase in health insurance coverage should not be interpreted as evidence that climate-related damages have been fully offset. Instead, substantial residual damages may remain in the form of heat-related illness, injury, productivity losses, and other adverse health outcomes.
+
+Our results also indicate that adaptation capacity is distributed unevenly across workers. In particular, undocumented workers experience much smaller increases in employer-provided health insurance despite facing many of the same climate-related health risks as documented workers. These findings suggest that climate adaptation within agricultural labor markets may reinforce existing vulnerabilities, highlighting the importance of policies that expand access to health protection and workplace safety measures for workers who are least able to benefit from employer-provided adaptation mechanisms.
+
+The findings have several policy implications. First, the results highlight the role of employer-provided health insurance in adapting to warming temperatures, but also highlight the slow expansion of health insurance. Several papers show that health insurance contributes to sustaining workers' productivity, as in the agricultural sector. Since health insurance can improve agricultural workers' productivity, providing information about its benefits may increase coverage. It also highlights the role of government health systems, such as Medicaid, which protects workers' health, and can complement employer-sponsored health insurance. 
+
+Second, the results suggest that the benefits of labor market adaptation are not distributed equally across workers. In particular, undocumented workers experience little increase in employer-provided health insurance coverage despite facing many of the same heat-related health risks. Given the continued rise in temperatures, protecting the health of agricultural workers is increasingly important. Broader workplace protections that apply to all agricultural workers, regardless of insurance status or legal status, may be necessary to mitigate the adverse effects of climate change. For example, the Occupational Safety and Health Administration (OSHA) requires employers to provide workplaces free from recognized hazards, and the National Institute for Occupational Safety and Health (NIOSH) has established recommended standards for occupational heat exposure. In addition, several states, including California, have adopted heat protection standards that mandate preventive measures such as access to water, shade, and rest breaks when temperatures exceed specified thresholds. Expanding similar heat protection standards to other states may help reduce heat-related health risks and provide a more uniform level of protection for agricultural workers.
+
+Taken together, these findings suggest that climate adaptation in agricultural labor markets is occurring, but that it remains partial and unequal. While employers increasingly respond to warming temperatures through health-related fringe benefits, substantial climate-related damages remain and vulnerable workers do not benefit equally from these adjustments.
+
+There are limitations in the study. First, similar to other studies using the NAWS data \citep{kandilov_impact_2022, donkor_effects_2022, rutledge_health_2026}, we cannot include workers' fixed effects because the data is repeated cross-sectional data. Second, since it is worker-level data, we do not know which factor, specifically the employer side or the worker side, demands the health insurance. Identifying which factor is stronger is important to future research. Third, we do not analyze the warming temperature change in the composition of crop workers in the county. While we think that it is limited, there may be a possibility that workers who pursue health insurance migrate to the county with high fringe benefits, some of which may be in hotter regions. Understanding the migration response of crop workers in response to warming temperatures is also future research. Lastly, we do not completely control for employers' characteristics because of the data limitations. Whether they can provide health insurance may depend on farm size. Analyzing those factors is also important for future research. 
+
+
+
+\newpage
+\bibliographystyle{apacite}
+\bibliography{ref}
+
+\clearpage
+\appendix
+
+
+\begin{appendices}
+\subsection*{List of Field crop and specialty crop}
+\label{listfieldspecialty}
+\begin{itemize}
+    \item Field crop
+      \begin{itemize}
+          \item Corn (1), Wheat (2), Barley (3), Oats (4), Rice (5), Rye (6), Cotton/Cottonseed (7), Sugarbeets (8), Tobacco (9), Soybeans (10), Peanuts (11), Other Oilseeds (12), Multiple Field Crops (96), Multiple Grains (97), Tea (101), Linen (102), Hay (104), Sorghum (105), Silage (106), Sod (109), Sugar Cane (110), Alfalfa (111), Seeds (112), Millet (113)
+      \end{itemize}
+    \item Specialty crop
+      \begin{itemize}
+          \item Almonds (13), Pecans (14), Pistachios (15), Walnuts (16), Other Tree Nuts (17), Cut Flowers/Florist Greens (18), Bulbs (19), Potted Flowering Plants/Ornamental Plants/Foliage (20), Nursery Products (21), Bedding Plants (22), Christmas Trees (23), Miscellaneous Specialty Crops (24), Food Grown Under Cover (25), Apples (26), Apricots (27), Avocados (28), Blueberries (29), Bushberries (30), Cherries (31), Cranberries (32), Currants (33), Dates (34), Figs (35), Grapefruit (36), Grapes-Wine (37), Grapes-Table (38), Grapes-Raisin (39), Kiwifruit (40), Lemons (41), Limes (42), Nectarines (43), Olives (44), Oranges (45), Peaches (46), Pears (47), Plums (48), Prunes (49), Strawberries (50), Tangerines (51), Other Fruits (52), Asparagus (53), Artichokes (54), Beans, Fresh (55), Beans, Dry (Garbanzo, Chick-Pea) (56), Beets (57), Broccoli (58), Brussels Sprouts (59), Cabbage (60), Cantaloupe (61), Carrots (62), Cauliflower (63), Celery (64), Collards/Other Leafy Greens (65), Corn, Sweet (66), Cucumbers (67), Eggplant (68), Garlic (69), Green Onions/Shallots (70), Melons-Honeydew (71), Lettuce (72), Other Melons (73), Onions (74), Oriental Vegetables (75), Peas, Dry and Lentils (76), Peas, Green (77), Peppers (Sweet and Hot) (78), Potatoes (79), Pumpkins (80), Spinach (81), Squash (82), Sweet Potatoes and Yam (83), Tomatoes (84), Turnips (85), Watermelons (86), Other Vegetables (87), Miscellaneous/Multiple (88), Multiple Nursery Product (89), Multiple Citrus (90), Multiple Deciduous Fruits (91), Multiple Nuts (92), Multiple Deciduous Nuts (93), Multiple Berry/Melons (94), Multiple Vegetables (95), Herbs (103), Clove (107), Coffee (108), Hops (114), Cilantro (115), Radishes (116), Aloe Vera (117), Parsley (118), Mustard (119), Basil (120), Arugula (122), Kale (123), Rapini (124), Grape Leaves (125), Leeks (126), Mushroom (127).
+      \end{itemize}
+\end{itemize}
+
+
+\clearpage
+\subsection*{Age distribution}
+\begin{figure}[h!]
+\caption{Age distribution of crop workers}
+\label{agedistribution}
+\begin{subfigure}{1\textwidth}
+  \centering
+  \includegraphics[width=1\linewidth]{twkdensityage.pdf}
+\end{subfigure}
+\end{figure}
+
+\begin{figure}[h!]
+\caption{Share of undocumented workers, 1993--2022}
+\label{undocumentedshare}
+\begin{subfigure}{1\textwidth}
+  \centering
+  \includegraphics[width=1\linewidth]{graphbarundocument.pdf}
+\end{subfigure}
+\end{figure}
+
+
+
+\clearpage
+\begin{figure}[h!]
+\caption{Trend of health insurance and wage, 1993-2022. The graph shows trends in health insurance and hourly wages. All of them are unweighted.}
+\label{trendfringewageamongdocumentundocument}
+\begin{subfigure}{1\textwidth}
+  \centering
+  \includegraphics[width=1\linewidth]{line_wagehr_legalstaus.pdf}
+\end{subfigure}
+\end{figure}
+
+\clearpage
+\subsection{Additional Controls: County-Level Farm Share and Spouse Insurance}
+\begin{table}[h!]
+\caption{Impacts of the average temperature from t-1 to t-10 on the fringe benefit and wages: robustness with additional controls. The table shows the coefficient estimates from Eq.~\ref{maineq1}. The outcome variables are health insurance and wages. Standard errors are clustered at the county level.}
+\label{tab:robustness_controls}
+\centering
+\scriptsize
+\begin{tabular}{l*{4}{c}}
+\hline\hline
+                    &\multicolumn{1}{c}{(1)Health ins.}&\multicolumn{1}{c}{(2)Health ins.}&\multicolumn{1}{c}{(3)Wage}&\multicolumn{1}{c}{(4)Wage}\\
+\hline
+Below 8C            &       0.069         &      -0.143         &       0.010         &       0.026         \\
+                    &     (0.121)         &     (0.126)         &     (0.068)         &     (0.065)         \\
+9-12C               &      -0.012         &       0.017         &       0.095         &       0.096         \\
+                    &     (0.185)         &     (0.151)         &     (0.077)         &     (0.072)         \\
+13-16C              &       0.398\sym{*}  &       0.004         &       0.102         &       0.013         \\
+                    &     (0.220)         &     (0.219)         &     (0.126)         &     (0.108)         \\
+17-20C              &       0.000         &       0.000         &       0.000         &       0.000         \\
+                    &         (.)         &         (.)         &         (.)         &         (.)         \\
+21-24C              &       0.266         &       0.164         &       0.240\sym{*}  &       0.173         \\
+                    &     (0.195)         &     (0.213)         &     (0.128)         &     (0.125)         \\
+25-28C              &       0.341\sym{***}&       0.101         &       0.058         &       0.045         \\
+                    &     (0.131)         &     (0.152)         &     (0.074)         &     (0.068)         \\
+29-32C              &       0.283\sym{*}  &       0.224         &       0.109         &       0.076         \\
+                    &     (0.146)         &     (0.168)         &     (0.095)         &     (0.092)         \\
+33-36C              &       0.378\sym{***}&       0.201         &       0.067         &       0.083         \\
+                    &     (0.131)         &     (0.172)         &     (0.098)         &     (0.092)         \\
+Above 37C           &       0.483\sym{***}&       0.358\sym{**} &       0.129         &       0.073         \\
+                    &     (0.124)         &     (0.164)         &     (0.095)         &     (0.090)         \\
+Precipitation       &       0.012         &      -0.011         &       0.021\sym{*}  &       0.029\sym{***}\\
+                    &     (0.021)         &     (0.020)         &     (0.011)         &     (0.011)         \\
+Precipitation (squared)&      -0.001         &       0.003         &      -0.003\sym{**} &      -0.005\sym{***}\\
+                    &     (0.003)         &     (0.003)         &     (0.002)         &     (0.002)         \\
+Age (yrs)           &       0.007\sym{***}&       0.005\sym{***}&       0.013\sym{***}&       0.010\sym{***}\\
+                    &     (0.001)         &     (0.002)         &     (0.001)         &     (0.001)         \\
+Age (squared)       &      -0.000\sym{***}&      -0.000\sym{***}&      -0.000\sym{***}&      -0.000\sym{***}\\
+                    &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         \\
+Female (dummy)      &       0.012         &       0.010         &      -0.050\sym{***}&      -0.038\sym{***}\\
+                    &     (0.012)         &     (0.013)         &     (0.005)         &     (0.006)         \\
+Foreign born (dummy)&      -0.020         &      -0.011         &      -0.053\sym{***}&      -0.052\sym{***}\\
+                    &     (0.013)         &     (0.016)         &     (0.009)         &     (0.009)         \\
+Undocumented (dummy)&      -0.064\sym{***}&      -0.069\sym{***}&      -0.041\sym{***}&      -0.034\sym{***}\\
+                    &     (0.011)         &     (0.014)         &     (0.005)         &     (0.005)         \\
+Working years in the farm (yrs)&       0.002\sym{***}&       0.001\sym{*}  &       0.002\sym{***}&       0.001\sym{***}\\
+                    &     (0.001)         &     (0.001)         &     (0.000)         &     (0.000)         \\
+Working year of this employer (yrs)&       0.005\sym{***}&       0.006\sym{***}&       0.006\sym{***}&       0.005\sym{***}\\
+                    &     (0.001)         &     (0.001)         &     (0.001)         &     (0.001)         \\
+Employer: contractor (dummy)&      -0.094\sym{***}&      -0.062\sym{***}&       0.010         &       0.002         \\
+                    &     (0.012)         &     (0.012)         &     (0.011)         &     (0.012)         \\
+Share of large farms (>10 workers)&      -0.368         &                     &       0.199\sym{*}  &                     \\
+                    &     (0.329)         &                     &     (0.112)         &                     \\
+Spouse covered by employer-sponsored insurance&                     &       0.098\sym{***}&                     &       0.090\sym{***}\\
+                    &                     &     (0.020)         &                     &     (0.010)         \\
+\hline
+State-by-year FE    &         Yes         &         Yes         &         Yes         &         Yes         \\
+Month FE            &         Yes         &         Yes         &         Yes         &         Yes         \\
+County FE           &         Yes         &         Yes         &         Yes         &         Yes         \\
+Crop FE             &         Yes         &         Yes         &         Yes         &         Yes         \\
+Task FE             &         Yes         &         Yes         &         Yes         &         Yes         \\
+Observations        &   37110.000         &   26100.000         &   36518.000         &   25664.000         \\
+R-squared           &       0.317         &       0.373         &       0.673         &       0.736         \\
+\hline\hline
+\multicolumn{5}{l}{\footnotesize Standard errors in parentheses}\\
+\multicolumn{5}{l}{\footnotesize \sym{*} \(p<0.1\), \sym{**} \(p<0.05\), \sym{***} \(p<0.01\)}\\
+\end{tabular}
+\end{table}
+
+
+
+\clearpage
+\subsection{Other workers' compensation}
+\begin{table}[h!]
+\caption{Impacts of the average temperature from t-1 to t-10 on the fringe benefit and wages. The graphs show the coefficient estimates from Eq.~\ref{maineq1}. The outcome variables are workers' compensation and unemployment insurance. Standard errors are clustered at the county level.}
+\footnotesize
+\centering
+\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+\begin{tabular}{l*{3}{c}}
+\hline\hline
+                    &\multicolumn{1}{c}{(1)WC medical}&\multicolumn{1}{c}{(2)WC wage}&\multicolumn{1}{c}{(3)UI}\\
+\hline
+Below 8C            &       0.131         &       0.150         &       0.085         \\
+                    &     (0.125)         &     (0.123)         &     (0.060)         \\
+9-12C               &       0.012         &       0.084         &      -0.102\sym{*}  \\
+                    &     (0.102)         &     (0.125)         &     (0.057)         \\
+13-16C              &       0.080         &       0.150         &       0.092         \\
+                    &     (0.194)         &     (0.196)         &     (0.108)         \\
+17-20C              &       0.000         &       0.000         &       0.000         \\
+                    &         (.)         &         (.)         &         (.)         \\
+21-24C              &       0.100         &       0.202         &      -0.088         \\
+                    &     (0.195)         &     (0.203)         &     (0.080)         \\
+25-28C              &       0.176         &       0.234\sym{**} &       0.080         \\
+                    &     (0.118)         &     (0.095)         &     (0.079)         \\
+29-32C              &       0.056         &       0.074         &      -0.089         \\
+                    &     (0.134)         &     (0.132)         &     (0.061)         \\
+33-36C              &       0.057         &       0.311\sym{**} &       0.072         \\
+                    &     (0.157)         &     (0.128)         &     (0.091)         \\
+Above 37C           &       0.129         &       0.207         &      -0.025         \\
+                    &     (0.137)         &     (0.134)         &     (0.082)         \\
+Precipitation       &       0.014         &       0.040\sym{**} &      -0.015         \\
+                    &     (0.019)         &     (0.017)         &     (0.012)         \\
+Precipitation (squared)&       0.000         &      -0.005\sym{*}  &       0.002         \\
+                    &     (0.003)         &     (0.002)         &     (0.002)         \\
+Age (yrs)           &       0.014\sym{***}&       0.015\sym{***}&       0.011\sym{***}\\
+                    &     (0.002)         &     (0.002)         &     (0.001)         \\
+Age (squared)       &      -0.000\sym{***}&      -0.000\sym{***}&      -0.000\sym{***}\\
+                    &     (0.000)         &     (0.000)         &     (0.000)         \\
+Female (dummy)      &      -0.001         &       0.002         &      -0.006         \\
+                    &     (0.010)         &     (0.012)         &     (0.007)         \\
+Foreign born (dummy)&      -0.051\sym{***}&      -0.066\sym{***}&      -0.054\sym{***}\\
+                    &     (0.014)         &     (0.013)         &     (0.017)         \\
+Undocumented (dummy)&      -0.062\sym{***}&      -0.102\sym{***}&      -0.630\sym{***}\\
+                    &     (0.009)         &     (0.014)         &     (0.029)         \\
+Working years in the farm (yrs)&       0.003\sym{***}&       0.004\sym{***}&       0.003\sym{***}\\
+                    &     (0.001)         &     (0.001)         &     (0.001)         \\
+Working year of this employer (yrs)&       0.005\sym{***}&       0.006\sym{***}&       0.002\sym{***}\\
+                    &     (0.001)         &     (0.001)         &     (0.001)         \\
+Employer: contractor (dummy)&      -0.033\sym{**} &      -0.036\sym{***}&      -0.004         \\
+                    &     (0.015)         &     (0.009)         &     (0.010)         \\
+\hline
+State-by-year FE    &         Yes         &         Yes         &         Yes         \\
+Month FE            &         Yes         &         Yes         &         Yes         \\
+County FE           &         Yes         &         Yes         &         Yes         \\
+Crop FE             &         Yes         &         Yes         &         Yes         \\
+Task FE             &         Yes         &         Yes         &         Yes         \\
+Observations        &   64713.000         &   64713.000         &   64713.000         \\
+R-squared           &       0.309         &       0.382         &       0.600         \\
+\hline\hline
+\multicolumn{4}{l}{\footnotesize Standard errors in parentheses}\\
+\multicolumn{4}{l}{\footnotesize \sym{*} \(p<0.1\), \sym{**} \(p<0.05\), \sym{***} \(p<0.01\)}\\
+\end{tabular}
+\end{table}
+
+\clearpage
+\subsection{Different weather period}
+\begin{table}[h!]
+\caption{Impacts of the average temperature over different horizons on the fringe benefit and wages. The table shows the coefficient estimates from Eq.~\ref{maineq1}. The outcome variables are health insurance and wages. Standard errors are clustered at the county level.}
+\label{tab:weatherperiod}
+\centering
+\scriptsize
+\begin{tabular}{l*{8}{c}}
+\hline\hline
+                    &\multicolumn{1}{c}{Past10}&\multicolumn{1}{c}{Past8}&\multicolumn{1}{c}{Past5}&\multicolumn{1}{c}{Past1}&\multicolumn{1}{c}{Past10}&\multicolumn{1}{c}{Past8}&\multicolumn{1}{c}{Past5}&\multicolumn{1}{c}{Past1}\\
+\hline
+temp\_nd\_60\_108      &       0.012         &      -0.038         &      -0.110         &      -0.096\sym{**} &       0.025         &      -0.019         &      -0.036         &      -0.015         \\
+                    &     (0.100)         &     (0.089)         &     (0.090)         &     (0.040)         &     (0.058)         &     (0.061)         &     (0.058)         &     (0.032)         \\
+temp\_nd\_109\_112     &      -0.043         &      -0.023         &      -0.031         &      -0.024         &       0.047         &       0.047         &       0.030         &      -0.045\sym{**} \\
+                    &     (0.102)         &     (0.094)         &     (0.099)         &     (0.068)         &     (0.063)         &     (0.074)         &     (0.069)         &     (0.022)         \\
+temp\_nd\_113\_116     &       0.202         &       0.084         &      -0.078         &      -0.072         &       0.052         &      -0.041         &      -0.079         &       0.038         \\
+                    &     (0.173)         &     (0.142)         &     (0.141)         &     (0.054)         &     (0.098)         &     (0.093)         &     (0.088)         &     (0.039)         \\
+temp\_nd\_117\_120     &       0.000         &       0.000         &       0.000         &       0.000         &       0.000         &       0.000         &       0.000         &       0.000         \\
+                    &         (.)         &         (.)         &         (.)         &         (.)         &         (.)         &         (.)         &         (.)         &         (.)         \\
+temp\_nd\_121\_124     &       0.084         &      -0.001         &      -0.095         &      -0.056         &       0.053         &       0.009         &      -0.020         &      -0.024         \\
+                    &     (0.172)         &     (0.158)         &     (0.147)         &     (0.071)         &     (0.097)         &     (0.118)         &     (0.108)         &     (0.036)         \\
+temp\_nd\_125\_128     &       0.204\sym{*}  &       0.162         &       0.063         &       0.011         &       0.058         &       0.020         &      -0.008         &       0.045         \\
+                    &     (0.111)         &     (0.098)         &     (0.122)         &     (0.096)         &     (0.059)         &     (0.054)         &     (0.054)         &     (0.028)         \\
+temp\_nd\_129\_132     &       0.134         &       0.068         &       0.022         &       0.037         &       0.014         &      -0.019         &      -0.025         &      -0.008         \\
+                    &     (0.116)         &     (0.103)         &     (0.099)         &     (0.067)         &     (0.064)         &     (0.072)         &     (0.065)         &     (0.030)         \\
+temp\_nd\_133\_136     &       0.213\sym{*}  &       0.155         &       0.041         &       0.035         &       0.014         &      -0.032         &      -0.083         &      -0.015         \\
+                    &     (0.114)         &     (0.108)         &     (0.119)         &     (0.077)         &     (0.076)         &     (0.076)         &     (0.067)         &     (0.035)         \\
+temp\_nd\_137\_150     &       0.251\sym{**} &       0.191\sym{*}  &       0.118         &       0.087         &       0.028         &      -0.003         &      -0.014         &       0.013         \\
+                    &     (0.107)         &     (0.101)         &     (0.100)         &     (0.076)         &     (0.075)         &     (0.075)         &     (0.069)         &     (0.032)         \\
+(sum) ppt           &       0.002         &       0.014         &       0.016         &      -0.000         &       0.027\sym{***}&       0.026\sym{***}&       0.023\sym{**} &       0.001         \\
+                    &     (0.012)         &     (0.013)         &     (0.013)         &     (0.008)         &     (0.009)         &     (0.009)         &     (0.009)         &     (0.003)         \\
+(sum) ppt $\times$ (sum) ppt&       0.001         &      -0.001         &      -0.002         &       0.000         &      -0.004\sym{***}&      -0.004\sym{***}&      -0.003\sym{**} &      -0.000         \\
+                    &     (0.002)         &     (0.002)         &     (0.002)         &     (0.001)         &     (0.001)         &     (0.001)         &     (0.001)         &     (0.000)         \\
+Age (yrs)           &       0.005\sym{***}&       0.005\sym{***}&       0.005\sym{***}&       0.005\sym{***}&       0.011\sym{***}&       0.011\sym{***}&       0.011\sym{***}&       0.011\sym{***}\\
+                    &     (0.001)         &     (0.001)         &     (0.001)         &     (0.001)         &     (0.001)         &     (0.001)         &     (0.001)         &     (0.001)         \\
+Age (squared)       &      -0.000\sym{***}&      -0.000\sym{***}&      -0.000\sym{***}&      -0.000\sym{***}&      -0.000\sym{***}&      -0.000\sym{***}&      -0.000\sym{***}&      -0.000\sym{***}\\
+                    &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         \\
+Female (dummy)      &       0.005         &       0.005         &       0.005         &       0.005         &      -0.049\sym{***}&      -0.049\sym{***}&      -0.049\sym{***}&      -0.049\sym{***}\\
+                    &     (0.010)         &     (0.010)         &     (0.010)         &     (0.010)         &     (0.005)         &     (0.005)         &     (0.005)         &     (0.005)         \\
+Foreign born (dummy)&      -0.014         &      -0.014         &      -0.014         &      -0.014         &      -0.033\sym{***}&      -0.033\sym{***}&      -0.033\sym{***}&      -0.033\sym{***}\\
+                    &     (0.009)         &     (0.009)         &     (0.009)         &     (0.009)         &     (0.008)         &     (0.008)         &     (0.008)         &     (0.008)         \\
+Undocumented (dummy)&      -0.050\sym{***}&      -0.050\sym{***}&      -0.050\sym{***}&      -0.050\sym{***}&      -0.040\sym{***}&      -0.040\sym{***}&      -0.041\sym{***}&      -0.040\sym{***}\\
+                    &     (0.008)         &     (0.008)         &     (0.008)         &     (0.008)         &     (0.005)         &     (0.005)         &     (0.005)         &     (0.005)         \\
+Working years in the farm (yrs)&       0.001\sym{***}&       0.001\sym{***}&       0.001\sym{***}&       0.001\sym{***}&       0.002\sym{***}&       0.002\sym{***}&       0.002\sym{***}&       0.002\sym{***}\\
+                    &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         &     (0.000)         \\
+Working year of this employer (yrs)&       0.005\sym{***}&       0.005\sym{***}&       0.005\sym{***}&       0.005\sym{***}&       0.006\sym{***}&       0.006\sym{***}&       0.006\sym{***}&       0.006\sym{***}\\
+                    &     (0.001)         &     (0.001)         &     (0.001)         &     (0.001)         &     (0.001)         &     (0.001)         &     (0.001)         &     (0.001)         \\
+Employer: contractor (dummy)&      -0.063\sym{***}&      -0.063\sym{***}&      -0.062\sym{***}&      -0.062\sym{***}&      -0.005         &      -0.005         &      -0.005         &      -0.005         \\
+                    &     (0.010)         &     (0.010)         &     (0.010)         &     (0.010)         &     (0.007)         &     (0.007)         &     (0.007)         &     (0.007)         \\
+\hline
+State-by-year FE    &         Yes         &         Yes         &         Yes         &         Yes         &         Yes         &         Yes         &         Yes         &         Yes         \\
+Month FE            &         Yes         &         Yes         &         Yes         &         Yes         &         Yes         &         Yes         &         Yes         &         Yes         \\
+County FE           &         Yes         &         Yes         &         Yes         &         Yes         &         Yes         &         Yes         &         Yes         &         Yes         \\
+Crop FE             &         Yes         &         Yes         &         Yes         &         Yes         &         Yes         &         Yes         &         Yes         &         Yes         \\
+Task FE             &         Yes         &         Yes         &         Yes         &         Yes         &         Yes         &         Yes         &         Yes         &         Yes         \\
+Observations        &   64713.000         &   64713.000         &   64713.000         &   64713.000         &   62968.000         &   62968.000         &   62968.000         &   62968.000         \\
+R-squared           &       0.308         &       0.308         &       0.308         &       0.307         &       0.754         &       0.754         &       0.754         &       0.754         \\
+\hline\hline
+\multicolumn{9}{l}{\footnotesize Standard errors in parentheses}\\
+\multicolumn{9}{l}{\footnotesize \sym{*} \(p<0.1\), \sym{**} \(p<0.05\), \sym{***} \(p<0.01\)}\\
+\end{tabular}
+\end{table}
+
+\clearpage
+\begin{table}[h!]
+\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+\begin{tabular}{l*{5}{c}}
+\hline\hline
+                    &\multicolumn{1}{c}{(1)Wage}&\multicolumn{1}{c}{(2)Health ins.}&\multicolumn{1}{c}{(3)WC medical}&\multicolumn{1}{c}{(4)WC wage}&\multicolumn{1}{c}{(5)UI}\\
+\hline
+tavg\_past10y        &      -0.013         &       0.184\sym{**} &       0.026         &      -0.043         &      -0.158\sym{**} \\
+                    &     (0.065)         &     (0.091)         &     (0.117)         &     (0.130)         &     (0.071)         \\
+[1em]
+tavg\_past10y $\times$ tavg\_past10y&      -0.000         &       0.109         &      -0.036         &       0.082         &       0.103         \\
+                    &     (0.055)         &     (0.088)         &     (0.092)         &     (0.125)         &     (0.079)         \\
+\hline
+Observations        &       58029         &       58029         &       58029         &       58029         &       58029         \\
+\(R^{2}\)           &       0.708         &       0.290         &       0.296         &       0.362         &       0.646         \\
+\hline\hline
+\multicolumn{6}{l}{\footnotesize Standard errors in parentheses}\\
+\multicolumn{6}{l}{\footnotesize }\\
+\multicolumn{6}{l}{\footnotesize \sym{*} \(p<0.1\), \sym{**} \(p<0.05\), \sym{***} \(p<0.01\)}\\
+\end{tabular}
+\caption{Impacts of continuous average temperature on fringe benefits and wages}
+\label{tab:diftemperature}
+\end{table}
+
+\clearpage
+\begin{figure}[h!]
+\caption{Crop and task distribution}
+\label{cropandtask}
+\begin{subfigure}{1\textwidth}
+  \centering
+  \includegraphics[width=1\linewidth]{graphbarcrop.pdf}
+\end{subfigure}
+
+\begin{subfigure}{1\textwidth}
+  \centering
+  \includegraphics[width=1\linewidth]{graphbartask.pdf}
+\end{subfigure}
+\end{figure}
+
+\clearpage
+\begin{figure}[h!]
+\caption{Temperature distribution, 1993--2022}
+\label{temperaturedistribution}
+\begin{subfigure}{1\textwidth}
+  \centering
+  \includegraphics[width=1\linewidth]{temperaturedist.pdf}
+\end{subfigure}
+\end{figure}    
+\end{appendices}
+\end{document}
+
+
+\begin{comment}
+
+
+\clearpage
+\begin{landscape}
+\begin{figure}[p]
+\centering
+\captionsetup{width=.95\linewidth}
+\caption{Impacts of the average temperature from t-1 to t-10 on the fringe benefit and wages (different clustering method). The graphs show the coefficient estimates from Eq.~\ref{maineq1}. The outcome variables are health insurance, workers' compensation, wages, and unemployment insurance. All specifications include county fixed effects, state-by-year fixed effects, month fixed effects, and control variables (age, age square, female dummy, undocumented dummy, foreign-born dummy, year of doing farm work, contractor dummy).}
+\label{mainresultdifculter}
+%------------------------
+% First row
+%------------------------
+\begin{subfigure}{0.31\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{coef_offinsu_past10y_all_difcluster.pdf}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.31\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{coef_injurypay_past10y_all_difcluster.pdf}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.31\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{coef_injurypaywhile_past10y_all_difcluster.pdf}
+\end{subfigure}
+
+\vspace{0.8cm}
+
+%------------------------
+% Second row
+%------------------------
+
+\hspace{0.17\linewidth}
+\begin{subfigure}{0.31\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{coef_loghourlywage_past10y_all_difcluster.pdf}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.31\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{coef_unempinsurance_past10y_all_difcluster.pdf}
+\end{subfigure}
+\hspace{0.17\linewidth}
+
+\end{figure}
+
+\end{landscape}
+
+
+
+\vspace{0.5cm}
+\noindent \textbf{Different standard errors}
+In the main specification, we use cluster standard error at the county level. However, error terms may be correlated not only within a county but also within a given year or given month. We also examine other standard errors (Appendix Figure \ref{mainresultdifculter}). Our results are robust across different specifications. 
+
+
+\end{comment}
